@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Complete organizational analytics - org charts, span of control, workforce optimization, and more.">
+    <title>Complete Workforce & Org Analytics - OptiForce</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+        }
+
+        .header h1 {
+            font-size: 42px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #b8b8d4;
+            font-size: 18px;
+        }
+
+        .upload-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 2px dashed rgba(102, 126, 234, 0.5);
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .upload-section:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .upload-section.dragover {
+            border-color: #764ba2;
+            background: rgba(118, 75, 162, 0.2);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .upload-section h2 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .upload-button:hover {
+            transform: translateY(-3px);
+        }
+
+        .sample-format {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .sample-format h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .format-table {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .format-table table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #b8b8d4;
+            min-width: 800px;
+        }
+
+        .format-table th {
+            background: rgba(102, 126, 234, 0.3);
+            padding: 12px;
+            text-align: left;
+            color: white;
+            font-weight: 600;
+        }
+
+        .format-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .results-section {
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .tab {
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px 10px 0 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            color: #b8b8d4;
+        }
+
+        .tab:hover {
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+        }
+
+        .stat-label {
+            color: #b8b8d4;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-change {
+            font-size: 14px;
+            color: #4ade80;
+        }
+
+        .stat-change.warning {
+            color: #fbbf24;
+        }
+
+        .stat-change.critical {
+            color: #f87171;
+        }
+
+        .analysis-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .analysis-card h3 {
+            color: #667eea;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-bottom: 20px;
+        }
+
+        /* Org Chart Styles */
+        .org-chart {
+            overflow-x: auto;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            min-height: 500px;
+        }
+
+        .org-node {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.5);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin: 10px;
+            display: inline-block;
+            min-width: 200px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .org-node:hover {
+            transform: scale(1.05);
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .org-node.ceo {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.3) 0%, rgba(245, 158, 11, 0.3) 100%);
+            border-color: rgba(251, 191, 36, 0.8);
+        }
+
+        .org-node.manager {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(37, 99, 235, 0.3) 100%);
+            border-color: rgba(59, 130, 246, 0.6);
+        }
+
+        .org-node-name {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .org-node-title {
+            font-size: 13px;
+            color: #b8b8d4;
+            margin-bottom: 5px;
+        }
+
+        .org-node-dept {
+            font-size: 12px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .org-node-reports {
+            font-size: 11px;
+            color: #4ade80;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .org-level {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .org-level-title {
+            color: #667eea;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .org-level-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .insights-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .insights-list li {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            color: #b8b8d4;
+            line-height: 1.6;
+        }
+
+        .insights-list li.warning {
+            border-left-color: #fbbf24;
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        .insights-list li.critical {
+            border-left-color: #f87171;
+            background: rgba(248, 113, 113, 0.1);
+        }
+
+        .insights-list li strong {
+            color: white;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .data-table th {
+            background: rgba(102, 126, 234, 0.3);
+            padding: 15px;
+            text-align: left;
+            color: white;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #b8b8d4;
+        }
+
+        .data-table tr:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .action-button {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .action-button:hover {
+            transform: scale(1.05);
+        }
+
+        .action-button.secondary {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #667eea;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(248, 113, 113, 0.2);
+            border: 1px solid #f87171;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            color: #fca5a5;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #667eea;
+            text-decoration: none;
+            margin-bottom: 20px;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: #764ba2;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .badge.healthy {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+        }
+
+        .badge.warning {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+
+        .badge.critical {
+            background: rgba(248, 113, 113, 0.2);
+            color: #f87171;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 32px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-container {
+                height: 300px;
+            }
+
+            .tabs {
+                overflow-x: auto;
+            }
+
+            .org-node {
+                min-width: 150px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Home</a>
+
+        <div class="header">
+            <h1>🎯 Complete Workforce & Org Analytics</h1>
+            <p>Organizational structure, span of control, workforce optimization - all in one powerful tool</p>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+        
+        <div class="upload-section" id="uploadSection" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-icon">📊</div>
+            <h2>Upload Your Organizational Data</h2>
+            <p>Drag & drop your Excel or CSV file here, or click to browse</p>
+            <button class="upload-button" type="button">Choose File</button>
+            <input type="file" id="fileInput" class="file-input" accept=".xlsx,.xls,.csv">
+            <p style="margin-top: 20px; font-size: 14px;">Supports: .xlsx, .xls, .csv files</p>
+        </div>
+
+        <div class="sample-format">
+            <h3>📋 Expected File Format</h3>
+            <p style="color: #b8b8d4; margin-bottom: 20px;">Your Excel/CSV should include these columns for complete analysis:</p>
+            <div class="format-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Employee_ID</th>
+                            <th>Employee_Name</th>
+                            <th>Manager_ID</th>
+                            <th>Department</th>
+                            <th>Job_Title</th>
+                            <th>Level</th>
+                            <th>Shift</th>
+                            <th>Hours_Worked</th>
+                            <th>Hourly_Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>E001</td>
+                            <td>Sarah Johnson</td>
+                            <td></td>
+                            <td>Executive</td>
+                            <td>CEO</td>
+                            <td>1</td>
+                            <td>Day</td>
+                            <td>50</td>
+                            <td>150</td>
+                        </tr>
+                        <tr>
+                            <td>E002</td>
+                            <td>Mike Chen</td>
+                            <td>E001</td>
+                            <td>Operations</td>
+                            <td>VP Operations</td>
+                            <td>2</td>
+                            <td>Day</td>
+                            <td>45</td>
+                            <td>80</td>
+                        </tr>
+                        <tr>
+                            <td>E003</td>
+                            <td>Emma Davis</td>
+                            <td>E002</td>
+                            <td>Operations</td>
+                            <td>Manager</td>
+                            <td>3</td>
+                            <td>Morning</td>
+                            <td>40</td>
+                            <td>45</td>
+                        </tr>
+                        <tr>
+                            <td>E004</td>
+                            <td>John Smith</td>
+                            <td>E003</td>
+                            <td>Production</td>
+                            <td>Team Lead</td>
+                            <td>4</td>
+                            <td>Morning</td>
+                            <td>40</td>
+                            <td>30</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="color: #b8b8d4; margin-top: 15px; font-size: 14px;">
+                💡 <strong>Tip:</strong> Manager_ID should reference another Employee_ID to build the org hierarchy. Leave empty for top-level executives.
+            </p>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Analyzing your organizational data...</p>
+        </div>
+
+        <div class="results-section" id="results">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('overview')">📊 Overview</div>
+                <div class="tab" onclick="switchTab('orgchart')">🏢 Org Structure</div>
+                <div class="tab" onclick="switchTab('span')">👥 Span of Control</div>
+                <div class="tab" onclick="switchTab('workforce')">⏰ Workforce Analysis</div>
+                <div class="tab" onclick="switchTab('insights')">💡 Insights</div>
+            </div>
+
+            <!-- Overview Tab -->
+            <div class="tab-content active" id="overview-tab">
+                <h2 style="margin-bottom: 30px; font-size: 32px;">Organizational Overview</h2>
+                <div class="stats-grid" id="statsGrid"></div>
+                
+                <div class="analysis-card">
+                    <h3>📈 Department Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="departmentChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="analysis-card">
+                    <h3>📊 Organizational Levels</h3>
+                    <div class="chart-container">
+                        <canvas id="levelChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Org Chart Tab -->
+            <div class="tab-content" id="orgchart-tab">
+                <h2 style="margin-bottom: 30px; font-size: 32px;">Organization Structure</h2>
+                <div class="analysis-card">
+                    <h3>🏢 Interactive Org Chart</h3>
+                    <div class="org-chart" id="orgChart"></div>
+                </div>
+            </div>
+
+            <!-- Span of Control Tab -->
+            <div class="tab-content" id="span-tab">
+                <h2 style="margin-bottom: 30px; font-size: 32px;">Span of Control Analysis</h2>
+                
+                <div class="stats-grid" id="spanStats"></div>
+
+                <div class="analysis-card">
+                    <h3>📊 Span of Control Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="spanChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="analysis-card">
+                    <h3>👥 Manager Overview</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="data-table" id="managerTable"></table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workforce Tab -->
+            <div class="tab-content" id="workforce-tab">
+                <h2 style="margin-bottom: 30px; font-size: 32px;">Workforce Optimization</h2>
+                
+                <div class="analysis-card">
+                    <h3>⏰ Shift Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="shiftChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="analysis-card">
+                    <h3>💰 Cost Analysis by Department</h3>
+                    <div class="chart-container">
+                        <canvas id="costChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Insights Tab -->
+            <div class="tab-content" id="insights-tab">
+                <h2 style="margin-bottom: 30px; font-size: 32px;">AI-Powered Insights & Recommendations</h2>
+                
+                <div class="analysis-card">
+                    <h3>🎯 Critical Findings</h3>
+                    <ul class="insights-list" id="criticalInsights"></ul>
+                </div>
+
+                <div class="analysis-card">
+                    <h3>⚠️ Warnings & Optimization Opportunities</h3>
+                    <ul class="insights-list" id="warningInsights"></ul>
+                </div>
+
+                <div class="analysis-card">
+                    <h3>✅ Healthy Indicators</h3>
+                    <ul class="insights-list" id="healthyInsights"></ul>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-button" onclick="downloadFullReport()">📄 Download Complete Report</button>
+                <button class="action-button" onclick="downloadOrgChart()">🏢 Export Org Chart</button>
+                <button class="action-button secondary" onclick="resetAnalysis()">🔄 Analyze Another File</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let workforceData = null;
+        let orgStructure = null;
+        let charts = {};
+
+        const fileInput = document.getElementById('fileInput');
+        const uploadSection = document.getElementById('uploadSection');
+
+        fileInput.addEventListener('change', handleFileSelect);
+
+        uploadSection.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadSection.classList.add('dragover');
+        });
+
+        uploadSection.addEventListener('dragleave', () => {
+            uploadSection.classList.remove('dragover');
+        });
+
+        uploadSection.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadSection.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) handleFile(file);
+        }
+
+        function handleFile(file) {
+            const validTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
+                              'application/vnd.ms-excel', 'text/csv'];
+            
+            if (!validTypes.includes(file.type) && !file.name.match(/\.(xlsx|xls|csv)$/)) {
+                showError('Please upload a valid Excel (.xlsx, .xls) or CSV file');
+                return;
+            }
+
+            document.getElementById('errorMessage').classList.remove('active');
+            document.getElementById('loading').classList.add('active');
+            uploadSection.style.display = 'none';
+            document.querySelector('.sample-format').style.display = 'none';
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+                    
+                    if (jsonData.length === 0) {
+                        throw new Error('The file appears to be empty');
+                    }
+
+                    processData(jsonData);
+                } catch (error) {
+                    showError('Error reading file: ' + error.message);
+                    resetToUpload();
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function processData(data) {
+            setTimeout(() => {
+                try {
+                    workforceData = normalizeData(data);
+                    orgStructure = buildOrgStructure(workforceData);
+                    
+                    displayOverview();
+                    createOrgChart();
+                    displaySpanAnalysis();
+                    displayWorkforceAnalysis();
+                    generateInsights();
+                    
+                    document.getElementById('loading').classList.remove('active');
+                    document.getElementById('results').classList.add('active');
+                } catch (error) {
+                    showError('Error processing data: ' + error.message);
+                    resetToUpload();
+                }
+            }, 1500);
+        }
+
+        function normalizeData(data) {
+            return data.map(row => ({
+                id: row.Employee_ID || row.employee_id || row.ID || row.id,
+                name: row.Employee_Name || row.employee_name || row.Name || row.name,
+                managerId: row.Manager_ID || row.manager_id || row.Reports_To || row.reports_to || null,
+                department: row.Department || row.department || 'Unknown',
+                title: row.Job_Title || row.job_title || row.Title || row.title || 'Employee',
+                level: parseInt(row.Level || row.level || 5),
+                shift: row.Shift || row.shift || 'Day',
+                hours: parseFloat(row.Hours_Worked || row.hours_worked || 40),
+                rate: parseFloat(row.Hourly_Rate || row.hourly_rate || 25)
+            }));
+        }
+
+        function buildOrgStructure(data) {
+            const structure = {};
+            const employees = {};
+            
+            data.forEach(emp => {
+                employees[emp.id] = {
+                    ...emp,
+                    directReports: [],
+                    totalReports: 0
+                };
+            });
+
+            data.forEach(emp => {
+                if (emp.managerId && employees[emp.managerId]) {
+                    employees[emp.managerId].directReports.push(emp.id);
+                }
+            });
+
+            // Calculate total reports (direct + indirect)
+            function calculateTotalReports(empId) {
+                const emp = employees[empId];
+                if (!emp) return 0;
+                
+                let total = emp.directReports.length;
+                emp.directReports.forEach(reportId => {
+                    total += calculateTotalReports(reportId);
+                });
+                emp.totalReports = total;
+                return total;
+            }
+
+            Object.keys(employees).forEach(id => calculateTotalReports(id));
+
+            return employees;
+        }
+
+        function displayOverview() {
+            const totalEmployees = workforceData.length;
+            const departments = new Set(workforceData.map(e => e.department)).size;
+            const levels = Math.max(...workforceData.map(e => e.level));
+            const managers = Object.values(orgStructure).filter(e => e.directReports.length > 0).length;
+            
+            const totalCost = workforceData.reduce((sum, e) => sum + (e.hours * e.rate), 0);
+            const avgSpan = managers > 0 ? 
+                Object.values(orgStructure).reduce((sum, e) => sum + e.directReports.length, 0) / managers : 0;
+
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-label">Total Employees</div>
+                    <div class="stat-value">${totalEmployees}</div>
+                    <div class="stat-change">Across ${departments} departments</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Organizational Levels</div>
+                    <div class="stat-value">${levels}</div>
+                    <div class="stat-change ${levels > 6 ? 'warning' : ''}">
+                        ${levels > 6 ? 'Consider flattening' : 'Healthy structure'}
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Managers</div>
+                    <div class="stat-value">${managers}</div>
+                    <div class="stat-change">${((managers/totalEmployees)*100).toFixed(1)}% of workforce</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Avg Span of Control</div>
+                    <div class="stat-value">${avgSpan.toFixed(1)}</div>
+                    <div class="stat-change ${avgSpan > 10 ? 'critical' : avgSpan < 4 ? 'warning' : ''}">
+                        ${avgSpan > 10 ? 'Too high' : avgSpan < 4 ? 'Too low' : 'Optimal range'}
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Labor Cost</div>
+                    <div class="stat-value">$${(totalCost/1000).toFixed(0)}K</div>
+                    <div class="stat-change">$${(totalCost/totalEmployees).toFixed(0)}/employee</div>
+                </div>
+            `;
+
+            // Department Chart
+            const deptCounts = {};
+            workforceData.forEach(e => {
+                deptCounts[e.department] = (deptCounts[e.department] || 0) + 1;
+            });
+
+            if (charts.department) charts.department.destroy();
+            const ctx1 = document.getElementById('departmentChart').getContext('2d');
+            charts.department = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(deptCounts),
+                    datasets: [{
+                        label: 'Employees',
+                        data: Object.values(deptCounts),
+                        backgroundColor: 'rgba(102, 126, 234, 0.6)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#ffffff' } } },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { color: '#b8b8d4' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+                        x: { ticks: { color: '#b8b8d4' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
+                    }
+                }
+            });
+
+            // Level Chart
+            const levelCounts = {};
+            workforceData.forEach(e => {
+                levelCounts[`Level ${e.level}`] = (levelCounts[`Level ${e.level}`] || 0) + 1;
+            });
+
+            if (charts.level) charts.level.destroy();
+            const ctx2 = document.getElementById('levelChart').getContext('2d');
+            charts.level = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: Object.keys(levelCounts).sort(),
+                    datasets: [{
+                        label: 'Employees per Level',
+                        data: Object.keys(levelCounts).sort().map(k => levelCounts[k]),
+                        backgroundColor: 'rgba(118, 75, 162, 0.2)',
+                        borderColor: 'rgba(118, 75, 162, 1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#ffffff' } } },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { color: '#b8b8d4' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+                        x: { ticks: { color: '#b8b8d4' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
+                    }
+                }
+            });
+        }
+
+        function createOrgChart() {
+            const chart = document.getElementById('orgChart');
+            const topLevel = workforceData.filter(e => !e.managerId || e.managerId === '');
+            
+            if (topLevel.length === 0) {
+                chart.innerHTML = '<p style="color: #b8b8d4;">No top-level executives found. Please ensure CEO/top management has empty Manager_ID.</p>';
+                return;
+            }
+
+            const levels = {};
+            workforceData.forEach(emp => {
+                if (!levels[emp.level]) levels[emp.level] = [];
+                levels[emp.level].push(emp);
+            });
+
+            let html = '';
+            Object.keys(levels).sort((a, b) => a - b).forEach(level => {
+                const employees = levels[level];
+                html += `
+                    <div class="org-level">
+                        <div class="org-level-title">Level ${level}</div>
+                        <div class="org-level-container">
+                `;
+                
+                employees.forEach(emp => {
+                    const reports = orgStructure[emp.id].directReports.length;
+                    const nodeClass = level == 1 ? 'ceo' : reports > 0 ? 'manager' : '';
+                    html += `
+                        <div class="org-node ${nodeClass}">
+                            <div class="org-node-name">${emp.name}</div>
+                            <div class="org-node-title">${emp.title}</div>
+                            <div class="org-node-dept">${emp.department}</div>
+                            ${reports > 0 ? `<div class="org-node-reports">📊 ${reports} Direct Reports</div>` : ''}
+                        </div>
+                    `;
+                });
+
+                html += '</div></div>';
+            });
+
+            chart.innerHTML = html;
+        }
+
+        function displaySpanAnalysis() {
+            const managers = Object.values(orgStructure).filter(e => e.directReports.length > 0);
+            const spans = managers.map(m => m.directReports.length);
+            const avgSpan = spans.reduce((a, b) => a + b, 0) / spans.length;
+            const maxSpan = Math.max(...spans);
+            const minSpan = Math.min(...spans.filter(s => s > 0));
+            
+            const optimal = spans.filter(s => s >= 5 && s <= 9).length;
+            const tooHigh = spans.filter(s => s > 9).length;
+            const tooLow = spans.filter(s => s < 5).length;
+
+            document.getElementById('spanStats').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-label">Average Span</div>
+                    <div class="stat-value">${avgSpan.toFixed(1)}</div>
+                    <div class="stat-change ${avgSpan > 10 ? 'critical' : avgSpan < 4 ? 'warning' : ''}">
+                        ${avgSpan >= 5 && avgSpan <= 9 ? 'Optimal' : 'Needs adjustment'}
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Largest Team</div>
+                    <div class="stat-value">${maxSpan}</div>
+                    <div class="stat-change ${maxSpan > 12 ? 'critical' : maxSpan > 9 ? 'warning' : ''}">
+                        ${maxSpan > 12 ? 'Critical overload' : 'Within limits'}
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Optimal Managers</div>
+                    <div class="stat-value">${optimal}</div>
+                    <div class="stat-change">${((optimal/managers.length)*100).toFixed(0)}% of managers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Need Restructuring</div>
+                    <div class="stat-value">${tooHigh + tooLow}</div>
+                    <div class="stat-change ${tooHigh + tooLow > 0 ? 'warning' : ''}">
+                        ${tooHigh} overloaded, ${tooLow} underutilized
+                    </div>
+                </div>
+            `;
+
+            // Span Chart
+            if (charts.span) charts.span.destroy();
+            const ctx = document.getElementById('spanChart').getContext('2d');
+            const spanBuckets = { '1-3': 0, '4-6': 0, '7-9': 0, '10-12': 0, '13+': 0 };
+            spans.forEach(s => {
+                if (s <= 3) spanBuckets['1-3']++;
+                else if (s <= 6) spanBuckets['4-6']++;
+                else if (s <= 9) spanBuckets['7-9']++;
+                else if (s <= 12) spanBuckets['10-12']++;
+                else spanBuckets['13+']++;
+            });
+
+            charts.span = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(spanBuckets),
+                    datasets: [{
+                        label: 'Number of Managers',
+                        data: Object.values(spanBuckets),
+                        backgroundColor: [
+                            'rgba(248, 113, 113, 0.6)',
+                            'rgba(251, 191, 36, 0.6)',
+                            'rgba(74, 222, 128, 0.6)',
+                            'rgba(251, 191, 36, 0.6)',
+                            'rgba(248, 113, 113, 0.6)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#ffffff' } },
+                        title: {
+                            display: true,
+                            text: 'Optimal span: 5-9 direct reports',
+                            color: '#667eea'
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { color: '#b8b8d4' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+                        x: { ticks: { color: '#b8b8d4' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
+                    }
+                }
+            });
+
+            // Manager Table
+            const tableHtml = `
+                <thead>
+                    <tr>
+                        <th>Manager</th>
+                        <th>Department</th>
+                        <th>Direct Reports</th>
+                        <th>Total Reports</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${managers.sort((a, b) => b.directReports.length - a.directReports.length).map(m => `
+                        <tr>
+                            <td><strong>${m.name}</strong><br><small>${m.title}</small></td>
+                            <td>${m.department}</td>
+                            <td>${m.directReports.length}</td>
+                            <td>${m.totalReports}</td>
+                            <td>
+                                ${m.directReports.length >= 5 && m.directReports.length <= 9 ? 
+                                    '<span class="badge healthy">Optimal</span>' : 
+                                    m.directReports.length > 9 ?
+                                    '<span class="badge critical">Overloaded</span>' :
+                                    '<span class="badge warning">Underutilized</span>'}
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+            document.getElementById('managerTable').innerHTML = tableHtml;
+        }
+
+        function displayWorkforceAnalysis() {
+            // Shift Chart
+            const shiftData = {};
+            workforceData.forEach(e => {
+                shiftData[e.shift] = (shiftData[e.shift] || 0) + e.hours;
+            });
+
+            if (charts.shift) charts.shift.destroy();
+            const ctx1 = document.getElementById('shiftChart').getContext('2d');
+            charts.shift = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(shiftData),
+                    datasets: [{
+                        data: Object.values(shiftData),
+                        backgroundColor: ['rgba(102, 126, 234, 0.8)', 'rgba(118, 75, 162, 0.8)', 'rgba(237, 100, 166, 0.8)', 'rgba(255, 154, 158, 0.8)'],
+                        borderWidth: 2,
+                        borderColor: '#0f0c29'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { color: '#ffffff', padding: 20 } } }
+                }
+            });
+
+            // Cost Chart
+            const costData = {};
+            workforceData.forEach(e => {
+                costData[e.department] = (costData[e.department] || 0) + (e.hours * e.rate);
+            });
+
+            if (charts.cost) charts.cost.destroy();
+            const ctx2 = document.getElementById('costChart').getContext('2d');
+            charts.cost = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(costData),
+                    datasets: [{
+                        label: 'Labor Cost ($)',
+                        data: Object.values(costData),
+                        backgroundColor: 'rgba(102, 126, 234, 0.6)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#ffffff' } } },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { color: '#b8b8d4' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+                        x: { ticks: { color: '#b8b8d4' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
+                    }
+                }
+            });
+        }
+
+        function generateInsights() {
+            const critical = [];
+            const warnings = [];
+            const healthy = [];
+
+            const managers = Object.values(orgStructure).filter(e => e.directReports.length > 0);
+            const avgSpan = managers.reduce((sum, m) => sum + m.directReports.length, 0) / managers.length;
+            const levels = Math.max(...workforceData.map(e => e.level));
+
+            // Critical insights
+            const overloaded = managers.filter(m => m.directReports.length > 12);
+            if (overloaded.length > 0) {
+                critical.push(`<strong>${overloaded.length} managers</strong> are critically overloaded with 12+ direct reports. This severely impacts effectiveness and decision quality.`);
+            }
+
+            if (levels > 7) {
+                critical.push(`Organization has <strong>${levels} hierarchical levels</strong>, creating communication bottlenecks. Industry best practice is 4-6 levels maximum.`);
+            }
+
+            const highSpanManagers = managers.filter(m => m.directReports.length > 9);
+            if (highSpanManagers.length / managers.length > 0.3) {
+                critical.push(`<strong>${((highSpanManagers.length / managers.length) * 100).toFixed(0)}%</strong> of managers exceed optimal span. Urgent restructuring needed.`);
+            }
+
+            // Warnings
+            if (avgSpan > 8) {
+                warnings.push(`Average span of control is <strong>${avgSpan.toFixed(1)}</strong>, above the optimal 5-9 range. Consider adding mid-level management.`);
+            } else if (avgSpan < 5) {
+                warnings.push(`Average span of control is <strong>${avgSpan.toFixed(1)}</strong>, below optimal range. Organization may have too many management layers.`);
+            }
+
+            const underutilized = managers.filter(m => m.directReports.length < 4);
+            if (underutilized.length > 0) {
+                warnings.push(`<strong>${underutilized.length} managers</strong> have fewer than 4 direct reports, indicating potential for flattening the organization.`);
+            }
+
+            const deptCosts = {};
+            workforceData.forEach(e => {
+                deptCosts[e.department] = (deptCosts[e.department] || 0) + (e.hours * e.rate);
+            });
+            const sortedDepts = Object.entries(deptCosts).sort((a, b) => b[1] - a[1]);
+            if (sortedDepts.length > 0) {
+                warnings.push(`<strong>${sortedDepts[0][0]}</strong> accounts for <strong>$${(sortedDepts[0][1]/1000).toFixed(0)}K</strong> in labor costs. Review for optimization opportunities.`);
+            }
+
+            // Healthy indicators
+            const optimalManagers = managers.filter(m => m.directReports.length >= 5 && m.directReports.length <= 9);
+            if (optimalManagers.length / managers.length > 0.5) {
+                healthy.push(`<strong>${optimalManagers.length}</strong> managers maintain optimal span of control (5-9 reports), representing ${((optimalManagers.length / managers.length) * 100).toFixed(0)}% of leadership.`);
+            }
+
+            if (levels >= 4 && levels <= 6) {
+                healthy.push(`Organization maintains a healthy <strong>${levels}-level hierarchy</strong>, enabling efficient communication and decision-making.`);
+            }
+
+            const totalEmployees = workforceData.length;
+            const managerRatio = (managers.length / totalEmployees) * 100;
+            if (managerRatio >= 10 && managerRatio <= 20) {
+                healthy.push(`Manager-to-employee ratio of <strong>${managerRatio.toFixed(1)}%</strong> is within optimal range (10-20%), supporting effective oversight.`);
+            }
+
+            document.getElementById('criticalInsights').innerHTML = 
+                critical.length > 0 ? critical.map(i => `<li class="critical">${i}</li>`).join('') : 
+                '<li>No critical issues detected in organizational structure.</li>';
+
+            document.getElementById('warningInsights').innerHTML = 
+                warnings.length > 0 ? warnings.map(i => `<li class="warning">${i}</li>`).join('') : 
+                '<li>No significant warnings. Organization is well-structured.</li>';
+
+            document.getElementById('healthyInsights').innerHTML = 
+                healthy.length > 0 ? healthy.map(i => `<li>${i}</li>`).join('') : 
+                '<li>Organization shows room for improvement in key metrics.</li>';
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+        }
+
+        function downloadFullReport() {
+            const managers = Object.values(orgStructure).filter(e => e.directReports.length > 0);
+            const avgSpan = managers.reduce((sum, m) => sum + m.directReports.length, 0) / managers.length;
+            
+            let report = `COMPLETE ORGANIZATIONAL ANALYSIS REPORT\n`;
+            report += `Generated: ${new Date().toLocaleString()}\n`;
+            report += `${'='.repeat(60)}\n\n`;
+            
+            report += `EXECUTIVE SUMMARY\n`;
+            report += `${'='.repeat(60)}\n`;
+            report += `Total Employees: ${workforceData.length}\n`;
+            report += `Total Managers: ${managers.length}\n`;
+            report += `Organizational Levels: ${Math.max(...workforceData.map(e => e.level))}\n`;
+            report += `Average Span of Control: ${avgSpan.toFixed(2)}\n\n`;
+
+            report += `SPAN OF CONTROL ANALYSIS\n`;
+            report += `${'='.repeat(60)}\n`;
+            managers.sort((a, b) => b.directReports.length - a.directReports.length).forEach(m => {
+                const status = m.directReports.length >= 5 && m.directReports.length <= 9 ? 'OPTIMAL' :
+                             m.directReports.length > 9 ? 'OVERLOADED' : 'UNDERUTILIZED';
+                report += `${m.name} (${m.title})\n`;
+                report += `  Direct Reports: ${m.directReports.length} | Total Reports: ${m.totalReports} | Status: ${status}\n\n`;
+            });
+
+            report += `DEPARTMENT BREAKDOWN\n`;
+            report += `${'='.repeat(60)}\n`;
+            const depts = {};
+            workforceData.forEach(e => {
+                if (!depts[e.department]) depts[e.department] = { count: 0, cost: 0 };
+                depts[e.department].count++;
+                depts[e.department].cost += e.hours * e.rate;
+            });
+            Object.entries(depts).forEach(([dept, data]) => {
+                report += `${dept}: ${data.count} employees, $${data.cost.toLocaleString()} labor cost\n`;
+            });
+
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `org-analysis-${Date.now()}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadOrgChart() {
+            const chart = document.getElementById('orgChart');
+            alert('Org Chart exported to clipboard!\n\nIn a production version, this would generate a PDF or image file of your organizational structure.');
+        }
+
+        function resetAnalysis() {
+            document.getElementById('results').classList.remove('active');
+            uploadSection.style.display = 'block';
+            document.querySelector('.sample-format').style.display = 'block';
+            fileInput.value = '';
+            workforceData = null;
+            orgStructure = null;
+        }
+
+        function resetToUpload() {
+            document.getElementById('loading').classList.remove('active');
+            uploadSection.style.display = 'block';
+            document.querySelector('.sample-format').style.display = 'block';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = '❌ ' + message;
+            errorDiv.classList.add('active');
+        }
+    </script>
+</body>
+</html>
