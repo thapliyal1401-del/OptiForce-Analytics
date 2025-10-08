@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Employee Performance Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            background: linear-gradient(135deg, #00d4ff 0%, #090979 50%, #ff0080 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #a8b2d1;
+            font-size: 18px;
+        }
+
+        .upload-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 2px dashed rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            padding: 60px;
+            text-align: center;
+            margin-bottom: 40px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-section:hover {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .upload-icon {
+            font-size: 72px;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .upload-button {
+            padding: 18px 50px;
+            background: linear-gradient(135deg, #00d4ff 0%, #090979 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .upload-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.5);
+        }
+
+        .sample-format {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .format-table {
+            overflow-x: auto;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .format-table table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1200px;
+        }
+
+        .format-table th {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(9, 9, 121, 0.3));
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.5);
+        }
+
+        .format-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #a8b2d1;
+        }
+
+        .results-section {
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(9, 9, 121, 0.1) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #00d4ff, #090979, #ff0080);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0, 212, 255, 0.3);
+            border-color: #00d4ff;
+        }
+
+        .metric-label {
+            font-size: 14px;
+            color: #a8b2d1;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .metric-value {
+            font-size: 42px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff 0%, #ff0080 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .metric-trend {
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .metric-trend.up {
+            color: #00ff88;
+        }
+
+        .metric-trend.down {
+            color: #ff4444;
+        }
+
+        .metric-trend.neutral {
+            color: #ffd700;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px 15px 0 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            color: #a8b2d1;
+        }
+
+        .tab:hover {
+            background: rgba(0, 212, 255, 0.2);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #00d4ff 0%, #090979 100%);
+            color: white;
+            border-color: #00d4ff;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .analysis-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 35px;
+            margin-bottom: 30px;
+            transition: all 0.3s;
+        }
+
+        .analysis-card:hover {
+            border-color: rgba(0, 212, 255, 0.5);
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.2);
+        }
+
+        .analysis-card h3 {
+            background: linear-gradient(135deg, #00d4ff 0%, #ff0080 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 26px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 450px;
+            margin-bottom: 20px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .data-table thead {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(9, 9, 121, 0.3));
+        }
+
+        .data-table th {
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.5);
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #a8b2d1;
+        }
+
+        .data-table tr:hover {
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge.excellent {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            color: #000;
+        }
+
+        .badge.good {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+            color: #000;
+        }
+
+        .badge.average {
+            background: linear-gradient(135deg, #ffd700 0%, #cc9900 100%);
+            color: #000;
+        }
+
+        .badge.poor {
+            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+            color: #fff;
+        }
+
+        .badge.critical {
+            background: linear-gradient(135deg, #ff0080 0%, #cc0066 100%);
+            color: #fff;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .insight-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 0, 128, 0.1));
+            border-left: 4px solid #00d4ff;
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s;
+        }
+
+        .insight-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .insight-card.warning {
+            border-left-color: #ffd700;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.1));
+        }
+
+        .insight-card.critical {
+            border-left-color: #ff0080;
+            background: linear-gradient(135deg, rgba(255, 0, 128, 0.1), rgba(255, 68, 68, 0.1));
+        }
+
+        .insight-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .insight-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .insight-description {
+            color: #a8b2d1;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .nine-box-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+        }
+
+        .nine-box-cell {
+            aspect-ratio: 1;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .nine-box-cell:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+
+        .nine-box-cell.high-high {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.3), rgba(0, 200, 100, 0.3));
+            border-color: #00ff88;
+        }
+
+        .nine-box-cell.high-medium {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(0, 150, 200, 0.3));
+            border-color: #00d4ff;
+        }
+
+        .nine-box-cell.medium-high {
+            background: linear-gradient(135deg, rgba(100, 200, 255, 0.3), rgba(50, 150, 200, 0.3));
+            border-color: #64c8ff;
+        }
+
+        .nine-box-cell.medium-medium {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(200, 170, 0, 0.2));
+            border-color: #ffd700;
+        }
+
+        .nine-box-cell.low {
+            background: linear-gradient(135deg, rgba(255, 68, 68, 0.2), rgba(200, 50, 50, 0.2));
+            border-color: #ff4444;
+        }
+
+        .cell-title {
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .cell-count {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff 0%, #ff0080 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .action-button {
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #00d4ff 0%, #090979 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .action-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.5);
+        }
+
+        .action-button.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 80px;
+            display: none;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 80px;
+            height: 80px;
+            border: 8px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: #00d4ff;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 30px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .error-message {
+            background: rgba(255, 0, 128, 0.2);
+            border: 2px solid #ff0080;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            color: #ffb3d9;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #00d4ff;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            color: #ff0080;
+            transform: translateX(-5px);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #ff0080);
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 32px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-container {
+                height: 300px;
+            }
+
+            .nine-box-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Home</a>
+
+        <div class="header">
+            <h1>🚀 Ultimate Performance Dashboard</h1>
+            <p>Enterprise-Grade Performance Analytics • Predictive Insights • 360° Employee View</p>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+        
+        <div class="upload-section" id="uploadSection" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-icon">📊</div>
+            <h2 style="color: #00d4ff; font-size: 32px; margin-bottom: 15px;">Upload Performance Data</h2>
+            <p style="color: #a8b2d1; margin-bottom: 30px; font-size: 18px;">Advanced analytics in seconds • Multiple KPIs • Predictive insights</p>
+            <button class="upload-button" type="button">Choose File</button>
+            <input type="file" id="fileInput" class="file-input" accept=".xlsx,.xls,.csv">
+            <p style="margin-top: 25px; color: #a8b2d1;">Supports: Excel (.xlsx, .xls) and CSV files</p>
+        </div>
+
+        <div class="sample-format">
+            <h3 style="color: #00d4ff; font-size: 24px; margin-bottom: 20px;">📋 Required Data Format</h3>
+            <p style="color: #a8b2d1; margin-bottom: 25px;">Your file should include these columns for complete analysis:</p>
+            <div class="format-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Employee_ID</th>
+                            <th>Employee_Name</th>
+                            <th>Department</th>
+                            <th>Job_Level</th>
+                            <th>Performance_Score</th>
+                            <th>Productivity_Score</th>
+                            <th>Quality_Score</th>
+                            <th>Attendance_Score</th>
+                            <th>Revenue_Generated</th>
+                            <th>Projects_Completed</th>
+                            <th>Manager_Rating</th>
+                            <th>Peer_Rating</th>
+                            <th>Self_Rating</th>
+                            <th>Potential_Score</th>
+                            <th>Years_Experience</th>
+                            <th>Salary</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>E001</td>
+                            <td>Sarah Johnson</td>
+                            <td>Sales</td>
+                            <td>Senior</td>
+                            <td>92</td>
+                            <td>88</td>
+                            <td>95</td>
+                            <td>98</td>
+                            <td>450000</td>
+                            <td>12</td>
+                            <td>90</td>
+                            <td>88</td>
+                            <td>85</td>
+                            <td>95</td>
+                            <td>5</td>
+                            <td>85000</td>
+                        </tr>
+                        <tr>
+                            <td>E002</td>
+                            <td>Mike Chen</td>
+                            <td>Engineering</td>
+                            <td>Mid</td>
+                            <td>78</td>
+                            <td>82</td>
+                            <td>75</td>
+                            <td>90</td>
+                            <td>0</td>
+                            <td>8</td>
+                            <td>80</td>
+                            <td>78</td>
+                            <td>82</td>
+                            <td>70</td>
+                            <td>3</td>
+                            <td>65000</td>
+                        </tr>
+                        <tr>
+                            <td>E003</td>
+                            <td>Emma Davis</td>
+                            <td>Marketing</td>
+                            <td>Junior</td>
+                            <td>65</td>
+                            <td>70</td>
+                            <td>68</td>
+                            <td>85</td>
+                            <td>80000</td>
+                            <td>5</td>
+                            <td>65</td>
+                            <td>70</td>
+                            <td>75</td>
+                            <td>85</td>
+                            <td>1</td>
+                            <td>45000</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="color: #a8b2d1; margin-top: 20px; font-size: 14px;">
+                💡 <strong>Tip:</strong> Scores should be 0-100. Revenue in dollars. The more data you provide, the deeper the insights!
+            </p>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <h3 style="color: #00d4ff; margin-bottom: 10px;">Analyzing Performance Data...</h3>
+            <p style="color: #a8b2d1;">Processing KPIs • Calculating trends • Generating predictions</p>
+        </div>
+
+        <div class="results-section" id="results">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('overview')">📊 Executive Overview</div>
+                <div class="tab" onclick="switchTab('individual')">👤 Individual Analysis</div>
+                <div class="tab" onclick="switchTab('ninebox')">🎯 9-Box Grid</div>
+                <div class="tab" onclick="switchTab('trends')">📈 Trends & Predictions</div>
+                <div class="tab" onclick="switchTab('insights')">💡 AI Insights</div>
+                <div class="tab" onclick="switchTab('actions')">⚡ Action Items</div>
+            </div>
+
+            <!-- Executive Overview Tab -->
+            <div class="tab-content active" id="overview-tab">
+                <h2 style="font-size: 36px; margin-bottom: 30px; background: linear-gradient(135deg, #00d4ff 0%, #ff0080 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    Executive Performance Overview
+                </h2>
+                <div class="dashboard-grid" id="metricsGrid"></div>
+                
+                <div class="analysis-card">
+                    <h3>📊 Performance Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="analysis-card">
+                    <h3>🏆 Department Performance Comparison</h3>
+                    <div class="chart-container">
+                        <canvas id="departmentChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="analysis-card">
+                    <h3>💎 Performance vs Potential Matrix</h3>
+                    <div class="chart-container">
+                        <canvas id="scatterChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Individual Analysis Tab -->
+            <div class="tab-content" id="individual-tab">
+                <h2 style="font-size: 36px; margin-bottom: 30px; background: linear-gradient(135deg, #00d4ff 0%, #ff0080 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    Individual Performance Deep Dive
+                </h2>
+
+                <div class="analysis-card">
+                    <h3>🌟 Top Performers</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="data-table" id="topPerformersTable"></table>
+                    </div>
+                </div>
+
+                <div class="analysis-card">
+                    <h3>⚠️ Needs Attention</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="data-table" id="needsAttentionTable"></table>
+                    </div>
+                </div>
+
+                <div class="analysis-card">
+                    <h3>📊 360-Degree Feedback Analysis</h3>
+                    <div class="chart-container">
+                        <canvas id="feedback360Chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9-Box Grid Tab -->
+            <div class="tab-content" id="ninebox-tab">
+                <h2 style="font-size: 36px; margin-bottom: 30px; background: linear-gradient(135deg, #00d4ff 0%, #ff0080 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    Talent 9-Box Grid
+                </h2>
+                
+                <div class="analysis-card">
+                    <h3>🎯 Performance vs Potential Matrix</h3>
+                    <p style="color: #a8b2d1; margin-bottom: 30px;">Strategic talent segmentation for succession planning and development</p>
+                    <div class="nine-box-grid" id="nineBoxGrid"></div>
+                </div>
+
+                <div class="analysis-card">
+                    <h3>📋 Detailed 9-Box Analysis</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="data-table" id="nineBoxTable"></table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trends Tab -->
+            <div class="tab-content" id="trends-tab">
+                <h2 style="font-size: 36px; margin-bottom: 30px; background: linear-gradient(135deg, #00d4ff 0%, #ff0080 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    Trends & Predictive Analytics
+                </h2>
+
+                <div class="analysis-card">
+                    <h3>📈 KPI Trends Over Time</h3>
+                    <div class="chart-container">
+                        <canvas id="trendsChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="analysis-card">
+                    <h3>🔮 Flight Risk Analysis</h3>
+                    <div class="chart-container">
+                        <canvas id="flightRiskChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="analysis-card">
+                    <h3>💰 ROI Analysis: Performance vs Compensation</h3>
+                    <div class="chart-container">
+                        <canvas id="roiChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Insights Tab -->
+            <div class="tab-content" id="insights-tab">
+                <h2 style="font-size: 36px; margin-bottom: 30px; background: linear-gradient(135deg, #00d4ff 0%, #ff0080 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    AI-Powered Insights & Recommendations
+                </h2>
+
+                <div class="insights-grid" id="insightsGrid"></div>
+
+                <div class="analysis-card">
+                    <h3>🎯 Strategic Recommendations</h3>
+                    <div id="strategicRecs"></div>
+                </div>
+            </div>
+
+            <!-- Action Items Tab -->
+            <div class="tab-content" id="actions-tab">
+                <h2 style="font-size: 36px; margin-bottom: 30px; background: linear-gradient(135deg, #00d4ff 0%, #ff0080 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    Prioritized Action Items
+                </h2>
+
+                <div class="analysis-card">
+                    <h3>🔴 Urgent Actions (Next 30 Days)</h3>
+                    <div id="urgentActions"></div>
+                </div>
+
+                <div class="analysis-card">
+                    <h3>🟡 Important Actions (Next 90 Days)</h3>
+                    <div id="importantActions"></div>
+                </div>
+
+                <div class="analysis-card">
+                    <h3>🟢 Strategic Initiatives (Next 6-12 Months)</h3>
+                    <div id="strategicActions"></div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-button" onclick="downloadExecutiveReport()">📄 Download Executive Report</button>
+                <button class="action-button" onclick="downloadDetailedAnalysis()">📊 Download Full Analysis</button>
+                <button class="action-button" onclick="downloadActionPlan()">⚡ Download Action Plan</button>
+                <button class="action-button secondary" onclick="resetDashboard()">🔄 Analyze New Data</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let performanceData = null;
+        let charts = {};
+
+        const fileInput = document.getElementById('fileInput');
+        const uploadSection = document.getElementById('uploadSection');
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) handleFile(file);
+        });
+
+        uploadSection.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadSection.style.borderColor = '#00d4ff';
+            uploadSection.style.background = 'rgba(0, 212, 255, 0.2)';
+        });
+
+        uploadSection.addEventListener('dragleave', () => {
+            uploadSection.style.borderColor = 'rgba(0, 212, 255, 0.3)';
+            uploadSection.style.background = 'rgba(255, 255, 255, 0.05)';
+        });
+
+        uploadSection.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file) handleFile(file);
+        });
+
+        function handleFile(file) {
+            if (!file.name.match(/\.(xlsx|xls|csv)$/)) {
+                showError('Please upload Excel or CSV file');
+                return;
+            }
+
+            document.getElementById('loading').classList.add('active');
+            uploadSection.style.display = 'none';
+            document.querySelector('.sample-format').style.display = 'none';
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(sheet);
+                    processPerformanceData(jsonData);
+                } catch (error) {
+                    showError('Error reading file: ' + error.message);
+                    resetToUpload();
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function processPerformanceData(data) {
+            setTimeout(() => {
+                try {
+                    performanceData = normalizePerformanceData(data);
+                    
+                    displayExecutiveOverview();
+                    displayIndividualAnalysis();
+                    displayNineBoxGrid();
+                    displayTrends();
+                    generateAIInsights();
+                    generateActionItems();
+                    
+                    document.getElementById('loading').classList.remove('active');
+                    document.getElementById('results').classList.add('active');
+                } catch (error) {
+                    showError('Error processing data: ' + error.message);
+                    resetToUpload();
+                }
+            }, 2000);
+        }
+
+        function normalizePerformanceData(data) {
+            return data.map(row => ({
+                id: row.Employee_ID || row.employee_id,
+                name: row.Employee_Name || row.employee_name || row.Name,
+                department: row.Department || row.department || 'Unknown',
+                level: row.Job_Level || row.job_level || 'Mid',
+                performance: parseFloat(row.Performance_Score || row.performance_score || 75),
+                productivity: parseFloat(row.Productivity_Score || row.productivity_score || 75),
+                quality: parseFloat(row.Quality_Score || row.quality_score || 75),
+                attendance: parseFloat(row.Attendance_Score || row.attendance_score || 90),
+                revenue: parseFloat(row.Revenue_Generated || row.revenue_generated || 0),
+                projects: parseInt(row.Projects_Completed || row.projects_completed || 0),
+                managerRating: parseFloat(row.Manager_Rating || row.manager_rating || 75),
+                peerRating: parseFloat(row.Peer_Rating || row.peer_rating || 75),
+                selfRating: parseFloat(row.Self_Rating || row.self_rating || 75),
+                potential: parseFloat(row.Potential_Score || row.potential_score || 75),
+                experience: parseFloat(row.Years_Experience || row.years_experience || 2),
+                salary: parseFloat(row.Salary || row.salary || 50000)
+            }));
+        }
+
+        function displayExecutiveOverview() {
+            const avgPerformance = average(performanceData.map(e => e.performance));
+            const avgPotential = average(performanceData.map(e => e.potential));
+            const totalRevenue = sum(performanceData.map(e => e.revenue));
+            const highPerformers = performanceData.filter(e => e.performance >= 85).length;
+            const flightRisk = performanceData.filter(e => e.performance < 70 || (e.managerRating - e.selfRating > 15)).length;
+            const avgROI = totalRevenue / sum(performanceData.map(e => e.salary));
+
+            const perfTrend = avgPerformance > 80 ? 'up' : avgPerformance < 70 ? 'down' : 'neutral';
+            const riskTrend = flightRisk > performanceData.length * 0.15 ? 'down' : 'up';
+
+            document.getElementById('metricsGrid').innerHTML = `
+                <div class="metric-card">
+                    <div class="metric-label">Average Performance</div>
+                    <div class="metric-value">${avgPerformance.toFixed(1)}</div>
+                    <div class="metric-trend ${perfTrend}">
+                        ${perfTrend === 'up' ? '↗' : perfTrend === 'down' ? '↘' : '→'} 
+                        ${perfTrend === 'up' ? 'Strong' : perfTrend === 'down' ? 'Needs Improvement' : 'Stable'}
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${avgPerformance}%"></div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">High Performers</div>
+                    <div class="metric-value">${highPerformers}</div>
+                    <div class="metric-trend up">
+                        ${((highPerformers/performanceData.length)*100).toFixed(1)}% of workforce
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${(highPerformers/performanceData.length)*100}%"></div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">Flight Risk</div>
+                    <div class="metric-value">${flightRisk}</div>
+                    <div class="metric-trend ${riskTrend}">
+                        ${((flightRisk/performanceData.length)*100).toFixed(1)}% at risk
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${(flightRisk/performanceData.length)*100}%; background: linear-gradient(90deg, #ff4444, #ff0080);"></div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">Avg Potential</div>
+                    <div class="metric-value">${avgPotential.toFixed(1)}</div>
+                    <div class="metric-trend ${avgPotential >= 75 ? 'up' : 'neutral'}">
+                        ${avgPotential >= 75 ? 'Strong talent pool' : 'Development needed'}
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${avgPotential}%"></div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">Total Revenue Impact</div>
+                    <div class="metric-value">$${(totalRevenue/1000000).toFixed(1)}M</div>
+                    <div class="metric-trend up">
+                        $${(totalRevenue/performanceData.length/1000).toFixed(0)}K per employee
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">Performance ROI</div>
+                    <div class="metric-value">${avgROI.toFixed(1)}x</div>
+                    <div class="metric-trend ${avgROI >= 3 ? 'up' : 'neutral'}">
+                        ${avgROI >= 3 ? 'Excellent returns' : 'Room for improvement'}
+                    </div>
+                </div>
+            `;
+
+            // Performance Distribution Chart
+            const perfBuckets = { '0-59': 0, '60-69': 0, '70-79': 0, '80-89': 0, '90-100': 0 };
+            performanceData.forEach(e => {
+                if (e.performance < 60) perfBuckets['0-59']++;
+                else if (e.performance < 70) perfBuckets['60-69']++;
+                else if (e.performance < 80) perfBuckets['70-79']++;
+                else if (e.performance < 90) perfBuckets['80-89']++;
+                else perfBuckets['90-100']++;
+            });
+
+            if (charts.distribution) charts.distribution.destroy();
+            const ctx1 = document.getElementById('distributionChart').getContext('2d');
+            charts.distribution = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(perfBuckets),
+                    datasets: [{
+                        label: 'Number of Employees',
+                        data: Object.values(perfBuckets),
+                        backgroundColor: [
+                            'rgba(255, 68, 68, 0.8)',
+                            'rgba(255, 165, 0, 0.8)',
+                            'rgba(255, 215, 0, 0.8)',
+                            'rgba(0, 212, 255, 0.8)',
+                            'rgba(0, 255, 136, 0.8)'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#ffffff', font: { size: 14 } } },
+                        title: {
+                            display: true,
+                            text: 'Bell curve analysis shows talent distribution',
+                            color: '#a8b2d1'
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { color: '#a8b2d1' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+                        x: { ticks: { color: '#a8b2d1' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
+                    }
+                }
+            });
+
+            // Department Comparison
+            const deptPerf = {};
+            performanceData.forEach(e => {
+                if (!deptPerf[e.department]) deptPerf[e.department] = { perf: [], pot: [], prod: [] };
+                deptPerf[e.department].perf.push(e.performance);
+                deptPerf[e.department].pot.push(e.potential);
+                deptPerf[e.department].prod.push(e.productivity);
+            });
+
+            const deptLabels = Object.keys(deptPerf);
+            const deptPerfAvg = deptLabels.map(d => average(deptPerf[d].perf));
+            const deptPotAvg = deptLabels.map(d => average(deptPerf[d].pot));
+
+            if (charts.department) charts.department.destroy();
+            const ctx2 = document.getElementById('departmentChart').getContext('2d');
+            charts.department = new Chart(ctx2, {
+                type: 'radar',
+                data: {
+                    labels: deptLabels,
+                    datasets: [{
+                        label: 'Performance',
+                        data: deptPerfAvg,
+                        backgroundColor: 'rgba(0, 212, 255, 0.3)',
+                        borderColor: '#00d4ff',
+                        borderWidth: 3
+                    }, {
+                        label: 'Potential',
+                        data: deptPotAvg,
+                        backgroundColor: 'rgba(255, 0, 128, 0.3)',
+                        borderColor: '#ff0080',
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#ffffff', font: { size: 14 } } } },
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { color: '#a8b2d1', backdropColor: 'transparent' },
+                            grid: { color: 'rgba(255, 255, 255, 0.2)' },
+                            pointLabels: { color: '#ffffff', font: { size: 12 } }
+                        }
+                    }
+                }
+            });
+
+            // Scatter Plot: Performance vs Potential
+            if (charts.scatter) charts.scatter.destroy();
+            const ctx3 = document.getElementById('scatterChart').getContext('2d');
+            charts.scatter = new Chart(ctx3, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Employees',
+                        data: performanceData.map(e => ({ x: e.performance, y: e.potential })),
+                        backgroundColor: 'rgba(0, 212, 255, 0.6)',
+                        borderColor: '#00d4ff',
+                        borderWidth: 2,
+                        pointRadius: 8,
+                        pointHoverRadius: 12
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#ffffff' } },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => {
+                                    const emp = performanceData[context.dataIndex];
+                                    return `${emp.name}: Perf ${emp.performance}, Pot ${emp.potential}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Performance Score', color: '#ffffff' },
+                            min: 0,
+                            max: 100,
+                            ticks: { color: '#a8b2d1' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        y: {
+                            title: { display: true, text: 'Potential Score', color: '#ffffff' },
+                            min: 0,
+                            max: 100,
+                            ticks: { color: '#a8b2d1' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function displayIndividualAnalysis() {
+            // Top Performers
+            const topPerformers = [...performanceData]
+                .sort((a, b) => b.performance - a.performance)
+                .slice(0, 10);
+
+            document.getElementById('topPerformersTable').innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Department</th>
+                        <th>Performance</th>
+                        <th>Potential</th>
+                        <th>Productivity</th>
+                        <th>Revenue Impact</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${topPerformers.map(e => `
+                        <tr>
+                            <td><strong>${e.name}</strong><br><small>${e.level}</small></td>
+                            <td>${e.department}</td>
+                            <td>${e.performance.toFixed(1)}</td>
+                            <td>${e.potential.toFixed(1)}</td>
+                            <td>${e.productivity.toFixed(1)}</td>
+                            <td>$${(e.revenue/1000).toFixed(0)}K</td>
+                            <td><span class="badge excellent">Star Performer</span></td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+
+            // Needs Attention
+            const needsAttention = performanceData
+                .filter(e => e.performance < 70 || (e.managerRating - e.selfRating > 15))
+                .sort((a, b) => a.performance - b.performance);
+
+            document.getElementById('needsAttentionTable').innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Department</th>
+                        <th>Performance</th>
+                        <th>Rating Gap</th>
+                        <th>Risk Level</th>
+                        <th>Recommended Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${needsAttention.map(e => {
+                        const gap = Math.abs(e.managerRating - e.selfRating);
+                        const riskLevel = e.performance < 60 ? 'critical' : e.performance < 70 ? 'poor' : 'average';
+                        const action = e.performance < 60 ? 'PIP Required' : 
+                                     gap > 15 ? 'Coaching Needed' : 
+                                     'Development Plan';
+                        return `
+                            <tr>
+                                <td><strong>${e.name}</strong><br><small>${e.level}</small></td>
+                                <td>${e.department}</td>
+                                <td>${e.performance.toFixed(1)}</td>
+                                <td>${gap.toFixed(1)}</td>
+                                <td><span class="badge ${riskLevel}">${riskLevel.toUpperCase()}</span></td>
+                                <td>${action}</td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+            `;
+
+            // 360 Feedback
+            const avg360 = {
+                manager: average(performanceData.map(e => e.managerRating)),
+                peer: average(performanceData.map(e => e.peerRating)),
+                self: average(performanceData.map(e => e.selfRating))
+            };
+
+            if (charts.feedback360) charts.feedback360.destroy();
+            const ctx = document.getElementById('feedback360Chart').getContext('2d');
+            charts.feedback360 = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Manager Rating', 'Peer Rating', 'Self Rating'],
+                    datasets: [{
+                        label: 'Average Score',
+                        data: [avg360.manager, avg360.peer, avg360.self],
+                        backgroundColor: [
+                            'rgba(0, 212, 255, 0.8)',
+                            'rgba(255, 0, 128, 0.8)',
+                            'rgba(255, 215, 0, 0.8)'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#ffffff' } },
+                        title: {
+                            display: true,
+                            text: 'Self-awareness analysis: Compare self vs manager/peer ratings',
+                            color: '#a8b2d1'
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100, ticks: { color: '#a8b2d1' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+                        x: { ticks: { color: '#a8b2d1' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
+                    }
+                }
+            });
+        }
+
+        function displayNineBoxGrid() {
+            const grid = {
+                'high-high': [], 'high-med': [], 'high-low': [],
+                'med-high': [], 'med-med': [], 'med-low': [],
+                'low-high': [], 'low-med': [], 'low-low': []
+            };
+
+            performanceData.forEach(e => {
+                const perfLevel = e.performance >= 85 ? 'high' : e.performance >= 70 ? 'med' : 'low';
+                const potLevel = e.potential >= 85 ? 'high' : e.potential >= 70 ? 'med' : 'low';
+                const key = `${perfLevel}-${potLevel}`;
+                grid[key].push(e);
+            });
+
+            const nineBoxHTML = `
+                <div class="nine-box-cell high-high">
+                    <div class="cell-title">Stars</div>
+                    <div class="cell-count">${grid['high-high'].length}</div>
+                    <small style="color: #a8b2d1;">High Perf, High Pot</small>
+                </div>
+                <div class="nine-box-cell high-medium">
+                    <div class="cell-title">Current Stars</div>
+                    <div class="cell-count">${grid['high-med'].length}</div>
+                    <small style="color: #a8b2d1;">High Perf, Med Pot</small>
+                </div>
+                <div class="nine-box-cell low">
+                    <div class="cell-title">Solid Citizens</div>
+                    <div class="cell-count">${grid['high-low'].length}</div>
+                    <small style="color: #a8b2d1;">High Perf, Low Pot</small>
+                </div>
+                <div class="nine-box-cell medium-high">
+                    <div class="cell-title">Future Stars</div>
+                    <div class="cell-count">${grid['med-high'].length}</div>
+                    <small style="color: #a8b2d1;">Med Perf, High Pot</small>
+                </div>
+                <div class="nine-box-cell medium-medium">
+                    <div class="cell-title">Core Players</div>
+                    <div class="cell-count">${grid['med-med'].length}</div>
+                    <small style="color: #a8b2d1;">Med Perf, Med Pot</small>
+                </div>
+                <div class="nine-box-cell low">
+                    <div class="cell-title">Solid Citizens</div>
+                    <div class="cell-count">${grid['med-low'].length}</div>
+                    <small style="color: #a8b2d1;">Med Perf, Low Pot</small>
+                </div>
+                <div class="nine-box-cell low">
+                    <div class="cell-title">Enigmas</div>
+                    <div class="cell-count">${grid['low-high'].length}</div>
+                    <small style="color: #a8b2d1;">Low Perf, High Pot</small>
+                </div>
+                <div class="nine-box-cell low">
+                    <div class="cell-title">Under-Performers</div>
+                    <div class="cell-count">${grid['low-med'].length}</div>
+                    <small style="color: #a8b2d1;">Low Perf, Med Pot</small>
+                </div>
+                <div class="nine-box-cell low">
+                    <div class="cell-title">Low Contributors</div>
+                    <div class="cell-count">${grid['low-low'].length}</div>
+                    <small style="color: #a8b2d1;">Low Perf, Low Pot</small>
+                </div>
+            `;
+
+            document.getElementById('nineBoxGrid').innerHTML = nineBoxHTML;
+
+            // Detailed table
+            const allGridEmployees = Object.entries(grid).flatMap(([category, employees]) =>
+                employees.map(e => ({ ...e, category }))
+            );
+
+            document.getElementById('nineBoxTable').innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Category</th>
+                        <th>Performance</th>
+                        <th>Potential</th>
+                        <th>Development Focus</th>
+                        <th>Succession Planning</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${allGridEmployees.slice(0, 20).map(e => {
+                        const categoryLabels = {
+                            'high-high': 'Stars',
+                            'high-med': 'Current Stars',
+                            'med-high': 'Future Stars',
+                            'med-med': 'Core Players'
+                        };
+                        const label = categoryLabels[e.category] || 'Needs Development';
+                        const focus = e.category === 'high-high' ? 'Retention & Leadership' :
+                                     e.category === 'med-high' ? 'Accelerate Development' :
+                                     e.category === 'high-med' ? 'Current Role Mastery' :
+                                     'Performance Improvement';
+                        const succession = e.category === 'high-high' || e.category === 'med-high' ? 'Yes' : 'No';
+                        
+                        return `
+                            <tr>
+                                <td><strong>${e.name}</strong><br><small>${e.department}</small></td>
+                                <td><span class="badge ${e.category.includes('high-high') ? 'excellent' : e.category.includes('high') ? 'good' : 'average'}">${label}</span></td>
+                                <td>${e.performance.toFixed(1)}</td>
+                                <td>${e.potential.toFixed(1)}</td>
+                                <td>${focus}</td>
+                                <td>${succession}</td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+            `;
+        }
+
+        function displayTrends() {
+            // Simulated trend data
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+            const avgPerf = average(performanceData.map(e => e.performance));
+            const trendData = months.map((_, i) => avgPerf + (Math.random() - 0.5) * 10);
+
+            if (charts.trends) charts.trends.destroy();
+            const ctx1 = document.getElementById('trendsChart').getContext('2d');
+            charts.trends = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Performance Score',
+                        data: trendData,
+                        borderColor: '#00d4ff',
+                        backgroundColor: 'rgba(0, 212, 255, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#ffffff' } },
+                        title: {
+                            display: true,
+                            text: 'Predictive: Expected trend based on current trajectory',
+                            color: '#a8b2d1'
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100, ticks: { color: '#a8b2d1' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+                        x: { ticks: { color: '#a8b2d1' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
+                    }
+                }
+            });
+
+            // Flight Risk
+            const riskLevels = { Low: 0, Medium: 0, High: 0, Critical: 0 };
+            performanceData.forEach(e => {
+                if (e.performance < 60) riskLevels.Critical++;
+                else if (e.performance < 70 || Math.abs(e.managerRating - e.selfRating) > 15) riskLevels.High++;
+                else if (e.performance < 80) riskLevels.Medium++;
+                else riskLevels.Low++;
+            });
+
+            if (charts.flightRisk) charts.flightRisk.destroy();
+            const ctx2 = document.getElementById('flightRiskChart').getContext('2d');
+            charts.flightRisk = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(riskLevels),
+                    datasets: [{
+                        data: Object.values(riskLevels),
+                        backgroundColor: [
+                            'rgba(0, 255, 136, 0.8)',
+                            'rgba(255, 215, 0, 0.8)',
+                            'rgba(255, 165, 0, 0.8)',
+                            'rgba(255, 0, 128, 0.8)'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#1a1a2e'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { color: '#ffffff', font: { size: 14 }, padding: 20 } }
+                    }
+                }
+            });
+
+            // ROI Chart
+            const roiData = performanceData.map(e => ({
+                x: e.salary,
+                y: e.revenue || e.performance * e.salary / 100,
+                r: e.performance / 5
+            }));
+
+            if (charts.roi) charts.roi.destroy();
+            const ctx3 = document.getElementById('roiChart').getContext('2d');
+            charts.roi = new Chart(ctx3, {
+                type: 'bubble',
+                data: {
+                    datasets: [{
+                        label: 'Employees',
+                        data: roiData,
+                        backgroundColor: 'rgba(0, 212, 255, 0.6)',
+                        borderColor: '#00d4ff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#ffffff' } },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => {
+                                    const emp = performanceData[context.dataIndex];
+                                    return `${emp.name}: $${(emp.salary/1000).toFixed(0)}K salary, $${(context.parsed.y/1000).toFixed(0)}K impact`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Salary ($)', color: '#ffffff' },
+                            ticks: { color: '#a8b2d1' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        y: {
+                            title: { display: true, text: 'Revenue/Impact ($)', color: '#ffffff' },
+                            ticks: { color: '#a8b2d1' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateAIInsights() {
+            const insights = [];
+            const avgPerf = average(performanceData.map(e => e.performance));
+            const highPerformers = performanceData.filter(e => e.performance >= 85);
+            const lowPerformers = performanceData.filter(e => e.performance < 70);
+            const highPotential = performanceData.filter(e => e.potential >= 85);
+            
+            // Critical insights
+            if (lowPerformers.length > performanceData.length * 0.2) {
+                insights.push({
+                    type: 'critical',
+                    icon: '🚨',
+                    title: 'High Under-Performance Rate',
+                    description: `${lowPerformers.length} employees (${((lowPerformers.length/performanceData.length)*100).toFixed(0)}%) are under-performing. Immediate intervention required. Consider PIPs, additional training, or role reassessment.`
+                });
+            }
+
+            if (highPerformers.length > 0) {
+                const avgTopSalary = average(highPerformers.map(e => e.salary));
+                const avgAllSalary = average(performanceData.map(e => e.salary));
+                if (avgTopSalary < avgAllSalary * 1.2) {
+                    insights.push({
+                        type: 'critical',
+                        icon: '💰',
+                        title: 'Retention Risk: Top Performers Under-Compensated',
+                        description: `Your star performers earn only ${((avgTopSalary/avgAllSalary - 1)*100).toFixed(0)}% more than average. Risk of losing them to competitors. Recommend 15-20% salary adjustments for top quartile.`
+                    });
+                }
+            }
+
+            // Warnings
+            const ratingGaps = performanceData.filter(e => Math.abs(e.managerRating - e.selfRating) > 15);
+            if (ratingGaps.length > 0) {
+                insights.push({
+                    type: 'warning',
+                    icon: '⚠️',
+                    title: 'Self-Awareness Gap Detected',
+                    description: `${ratingGaps.length} employees show significant disconnect between self and manager ratings. Schedule calibration sessions and provide feedback training.`
+                });
+            }
+
+            if (highPotential.length < performanceData.length * 0.15) {
+                insights.push({
+                    type: 'warning',
+                    icon: '📉',
+                    title: 'Weak Succession Pipeline',
+                    description: `Only ${((highPotential.length/performanceData.length)*100).toFixed(0)}% show high potential. Invest in development programs to build future leadership bench strength.`
+                });
+            }
+
+            // Positive insights
+            if (avgPerf >= 80) {
+                insights.push({
+                    type: 'good',
+                    icon: '🌟',
+                    title: 'Strong Overall Performance',
+                    description: `Average performance score of ${avgPerf.toFixed(1)} indicates a high-performing organization. Focus on maintaining momentum and recognizing achievements.`
+                });
+            }
+
+            const deptVariance = calculateDeptVariance();
+            if (deptVariance < 10) {
+                insights.push({
+                    type: 'good',
+                    icon: '⚖️',
+                    title: 'Balanced Department Performance',
+                    description: `Low variance across departments indicates consistent management quality and fair evaluation practices throughout the organization.`
+                });
+            }
+
+            const html = insights.map(i => `
+                <div class="insight-card ${i.type}">
+                    <div class="insight-icon">${i.icon}</div>
+                    <div class="insight-title">${i.title}</div>
+                    <div class="insight-description">${i.description}</div>
+                </div>
+            `).join('');
+
+            document.getElementById('insightsGrid').innerHTML = html;
+
+            // Strategic Recommendations
+            const recs = `
+                <div style="display: grid; gap: 20px;">
+                    <div style="background: rgba(0, 212, 255, 0.1); border-left: 4px solid #00d4ff; padding: 20px; border-radius: 10px;">
+                        <h4 style="color: #00d4ff; margin-bottom: 10px;">🎯 Talent Development Strategy</h4>
+                        <p style="color: #a8b2d1;">Implement accelerated development program for ${highPotential.length} high-potential employees. Focus on leadership training, mentorship, and stretch assignments.</p>
+                    </div>
+                    <div style="background: rgba(255, 215, 0, 0.1); border-left: 4px solid #ffd700; padding: 20px; border-radius: 10px;">
+                        <h4 style="color: #ffd700; margin-bottom: 10px;">💰 Compensation Optimization</h4>
+                        <p style="color: #a8b2d1;">Review compensation for top ${Math.ceil(performanceData.length * 0.2)} performers. Market analysis suggests 15-20% adjustment needed to prevent turnover.</p>
+                    </div>
+                    <div style="background: rgba(255, 0, 128, 0.1); border-left: 4px solid #ff0080; padding: 20px; border-radius: 10px;">
+                        <h4 style="color: #ff0080; margin-bottom: 10px;">⚡ Performance Improvement Plans</h4>
+                        <p style="color: #a8b2d1;">Initiate structured PIPs for ${lowPerformers.length} under-performers. Set clear 90-day goals with weekly check-ins and support resources.</p>
+                    </div>
+                </div>
+            `;
+            document.getElementById('strategicRecs').innerHTML = recs;
+        }
+
+        function generateActionItems() {
+            const urgent = [];
+            const important = [];
+            const strategic = [];
+
+            const lowPerformers = performanceData.filter(e => e.performance < 60);
+            const flightRisk = performanceData.filter(e => e.performance < 70);
+            const highPerformers = performanceData.filter(e => e.performance >= 85);
+
+            // Urgent (30 days)
+            if (lowPerformers.length > 0) {
+                urgent.push(`Initiate PIPs for ${lowPerformers.length} critical under-performers: ${lowPerformers.slice(0, 3).map(e => e.name).join(', ')}`);
+            }
+            urgent.push(`Schedule retention conversations with top 10 performers to assess satisfaction and career goals`);
+            urgent.push(`Review and adjust compensation for ${Math.min(5, highPerformers.length)} star performers to market rates`);
+
+            // Important (90 days)
+            important.push(`Launch 360-degree feedback program for all managers to improve self-awareness`);
+            important.push(`Implement skills development program for ${flightRisk.length} at-risk employees`);
+            important.push(`Create succession plans for key roles, identifying ${Math.ceil(performanceData.length * 0.1)} high-potential successors`);
+
+            // Strategic (6-12 months)
+            strategic.push(`Design and implement comprehensive talent management framework with clear career progression paths`);
+            strategic.push(`Establish performance-based compensation structure linking pay to measurable outcomes`);
+            strategic.push(`Build leadership development program for future managers, targeting ${Math.ceil(performanceData.length * 0.15)} high-potential individuals`);
+
+            document.getElementById('urgentActions').innerHTML = urgent.map(a => 
+                `<div style="background: rgba(255, 68, 68, 0.1); border-left: 4px solid #ff4444; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                    <span style="color: #ff4444; font-weight: 700;">🔴</span> ${a}
+                </div>`
+            ).join('');
+
+            document.getElementById('importantActions').innerHTML = important.map(a => 
+                `<div style="background: rgba(255, 215, 0, 0.1); border-left: 4px solid #ffd700; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                    <span style="color: #ffd700; font-weight: 700;">🟡</span> ${a}
+                </div>`
+            ).join('');
+
+            document.getElementById('strategicActions').innerHTML = strategic.map(a => 
+                `<div style="background: rgba(0, 255, 136, 0.1); border-left: 4px solid #00ff88; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                    <span style="color: #00ff88; font-weight: 700;">🟢</span> ${a}
+                </div>`
+            ).join('');
+        }
+
+        function calculateDeptVariance() {
+            const deptPerf = {};
+            performanceData.forEach(e => {
+                if (!deptPerf[e.department]) deptPerf[e.department] = [];
+                deptPerf[e.department].push(e.performance);
+            });
+            const avgs = Object.values(deptPerf).map(p => average(p));
+            const mean = average(avgs);
+            const variance = avgs.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / avgs.length;
+            return Math.sqrt(variance);
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(`${tab}-tab`).classList.add('active');
+        }
+
+        function downloadExecutiveReport() {
+            const avgPerf = average(performanceData.map(e => e.performance));
+            let report = `EXECUTIVE PERFORMANCE DASHBOARD REPORT\n`;
+            report += `Generated: ${new Date().toLocaleString()}\n`;
+            report += `${'='.repeat(70)}\n\n`;
+            report += `KEY METRICS:\n`;
+            report += `- Total Employees: ${performanceData.length}\n`;
+            report += `- Average Performance: ${avgPerf.toFixed(1)}/100\n`;
+            report += `- High Performers (85+): ${performanceData.filter(e => e.performance >= 85).length}\n`;
+            report += `- Under-Performers (<70): ${performanceData.filter(e => e.performance < 70).length}\n`;
+            report += `- Total Revenue Impact: $${sum(performanceData.map(e => e.revenue)).toLocaleString()}\n\n`;
+            
+            downloadTextFile(report, 'executive-report.txt');
+        }
+
+        function downloadDetailedAnalysis() {
+            let report = `DETAILED PERFORMANCE ANALYSIS\n\n`;
+            performanceData.forEach(e => {
+                report += `${e.name} (${e.department})\n`;
+                report += `  Performance: ${e.performance} | Potential: ${e.potential}\n`;
+                report += `  360 Ratings - Manager: ${e.managerRating}, Peer: ${e.peerRating}, Self: ${e.selfRating}\n\n`;
+            });
+            downloadTextFile(report, 'detailed-analysis.txt');
+        }
+
+        function downloadActionPlan() {
+            let plan = `PRIORITIZED ACTION PLAN\n`;
+            plan += `Generated: ${new Date().toLocaleString()}\n\n`;
+            plan += `URGENT (30 DAYS):\n`;
+            plan += `- Review under-performers\n`;
+            plan += `- Retention conversations\n\n`;
+            plan += `IMPORTANT (90 DAYS):\n`;
+            plan += `- 360 feedback launch\n`;
+            plan += `- Skills development\n\n`;
+            downloadTextFile(plan, 'action-plan.txt');
+        }
+
+        function downloadTextFile(content, filename) {
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function resetDashboard() {
+            document.getElementById('results').classList.remove('active');
+            uploadSection.style.display = 'block';
+            document.querySelector('.sample-format').style.display = 'block';
+            fileInput.value = '';
+            performanceData = null;
+        }
+
+        function resetToUpload() {
+            document.getElementById('loading').classList.remove('active');
+            uploadSection.style.display = 'block';
+            document.querySelector('.sample-format').style.display = 'block';
+        }
+
+        function showError(msg) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = '❌ ' + msg;
+            errorDiv.classList.add('active');
+        }
+
+        function average(arr) {
+            return arr.reduce((a, b) => a + b, 0) / arr.length;
+        }
+
+        function sum(arr) {
+            return arr.reduce((a, b) => a + b, 0);
+        }
+    </script>
+</body>
+</html>
