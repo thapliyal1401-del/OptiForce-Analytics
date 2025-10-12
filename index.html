@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-site-verification" content="91g5BCph9G5Q0fQ870vxpN6HKrsPSYwi_wQ19yk4waU" />
     <meta name="description" content="Professional workforce optimization and business intelligence tools. Upload your data and get instant insights for better decision making.">
     <meta name="keywords" content="workforce optimization, business intelligence, data analysis, HR analytics, productivity tools">
     <title>OptiForce Analytics - Workforce Optimization Tools</title>
@@ -15,27 +14,42 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000000;
             color: #ffffff;
             overflow-x: hidden;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        /* Premium Background */
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3), transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(74, 86, 226, 0.3), transparent 50%),
+                        radial-gradient(circle at 40% 20%, rgba(99, 102, 241, 0.2), transparent 50%);
+            z-index: -1;
         }
 
-        /* Navigation */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Premium Navigation */
         nav {
-            padding: 20px 0;
+            padding: 25px 0;
             position: sticky;
             top: 0;
-            background: rgba(15, 12, 41, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 100;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
         }
 
         nav .container {
@@ -45,369 +59,628 @@
         }
 
         .logo {
-            font-size: 24px;
-            font-weight: bold;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-size: 26px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            letter-spacing: -1px;
         }
 
         .nav-links {
             display: flex;
-            gap: 30px;
+            gap: 45px;
             list-style: none;
+            align-items: center;
         }
 
         .nav-links a {
-            color: #ffffff;
+            color: rgba(255, 255, 255, 0.8);
             text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: #667eea;
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 100px 0;
-            text-align: center;
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.3s;
             position: relative;
         }
 
+        .nav-links a:hover {
+            color: #ffffff;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Premium Hero */
+        .hero {
+            padding: 140px 0 120px;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 50px;
+            color: #667eea;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            letter-spacing: 0.5px;
+        }
+
         .hero h1 {
-            font-size: 56px;
-            margin-bottom: 20px;
+            font-size: 72px;
+            font-weight: 800;
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.7) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+            letter-spacing: -2px;
+        }
+
+        .hero p {
+            font-size: 22px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 45px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            padding: 18px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-secondary {
+            padding: 18px 40px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Trust Badges */
+        .trust-section {
+            padding: 60px 0;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .trust-text {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .trust-stats {
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            flex-wrap: wrap;
+        }
+
+        .trust-stat {
+            text-align: center;
+        }
+
+        .trust-number {
+            font-size: 48px;
+            font-weight: 800;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: fadeInUp 1s ease;
         }
 
-        .hero p {
-            font-size: 20px;
-            color: #b8b8d4;
-            margin-bottom: 40px;
-            animation: fadeInUp 1s ease 0.2s backwards;
-        }
-
-        .cta-button {
-            display: inline-block;
-            padding: 15px 40px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 600;
-            transition: transform 0.3s, box-shadow 0.3s;
-            animation: fadeInUp 1s ease 0.4s backwards;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        .trust-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            margin-top: 8px;
         }
 
         /* Features Section */
         .features {
-            padding: 80px 0;
-            background: rgba(255, 255, 255, 0.02);
+            padding: 120px 0;
         }
 
-        .features h2 {
+        .section-header {
             text-align: center;
-            font-size: 42px;
-            margin-bottom: 60px;
-            color: #ffffff;
+            margin-bottom: 80px;
+        }
+
+        .section-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 50px;
+            color: #667eea;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .section-header h2 {
+            font-size: 52px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .section-header p {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         .feature-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 30px;
         }
 
         .feature-card {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 20px;
-            padding: 40px;
-            transition: transform 0.3s, box-shadow 0.3s;
+            padding: 45px;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #667eea, transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
         }
 
         .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+            transform: translateY(-8px);
+            border-color: rgba(102, 126, 234, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
         }
 
         .feature-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
+            font-size: 56px;
+            margin-bottom: 25px;
+            display: block;
         }
 
         .feature-card h3 {
             font-size: 24px;
             margin-bottom: 15px;
-            color: #667eea;
+            font-weight: 700;
         }
 
         .feature-card p {
-            color: #b8b8d4;
-            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.7;
+            font-size: 15px;
         }
 
         /* Tools Section */
         .tools {
-            padding: 80px 0;
-        }
-
-        .tools h2 {
-            text-align: center;
-            font-size: 42px;
-            margin-bottom: 20px;
-        }
-
-        .tools-subtitle {
-            text-align: center;
-            color: #b8b8d4;
-            margin-bottom: 60px;
-            font-size: 18px;
+            padding: 120px 0;
+            background: rgba(255, 255, 255, 0.02);
         }
 
         .tool-card {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 50px;
             margin-bottom: 30px;
-            transition: all 0.3s;
+            transition: all 0.4s;
+            position: relative;
+        }
+
+        .tool-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 24px;
+            padding: 2px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s;
         }
 
         .tool-card:hover {
-            border-color: #667eea;
             transform: translateX(10px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tool-card:hover::after {
+            opacity: 1;
         }
 
         .tool-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .tool-card h3 {
-            font-size: 28px;
-            color: #667eea;
+            font-size: 32px;
+            font-weight: 700;
         }
 
         .tool-badge {
-            background: rgba(102, 126, 234, 0.3);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
+            padding: 8px 18px;
+            background: rgba(102, 126, 234, 0.2);
+            border: 1px solid rgba(102, 126, 234, 0.4);
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .tool-badge.new {
+            background: rgba(74, 222, 128, 0.2);
+            border-color: rgba(74, 222, 128, 0.4);
+            color: #4ade80;
         }
 
         .tool-badge.coming-soon {
-            background: rgba(255, 215, 0, 0.3);
-            color: #ffd700;
+            background: rgba(251, 191, 36, 0.2);
+            border-color: rgba(251, 191, 36, 0.4);
+            color: #fbbf24;
         }
 
         .tool-card p {
-            color: #b8b8d4;
+            color: rgba(255, 255, 255, 0.7);
             line-height: 1.8;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            font-size: 16px;
         }
 
         .tool-features {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 30px;
         }
 
         .tool-tag {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 6px 14px;
-            border-radius: 15px;
-            font-size: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .tool-button {
             display: inline-block;
-            padding: 12px 30px;
+            padding: 14px 32px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             text-decoration: none;
-            border-radius: 25px;
-            font-weight: 600;
-            transition: transform 0.3s;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 15px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
         .tool-button:hover {
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
         }
 
         .tool-button.secondary {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         /* CTA Section */
         .cta-section {
-            padding: 80px 0;
+            padding: 120px 0;
             text-align: center;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
         }
 
-        .cta-section h2 {
-            font-size: 42px;
+        .cta-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 30px;
+            padding: 80px 60px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .cta-card h2 {
+            font-size: 48px;
+            font-weight: 800;
             margin-bottom: 20px;
         }
 
-        .cta-section p {
-            font-size: 18px;
-            color: #b8b8d4;
+        .cta-card p {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.7);
             margin-bottom: 40px;
-        }
-
-        .contact-form {
-            max-width: 600px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .contact-form input,
-        .contact-form textarea {
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            color: white;
-            font-size: 16px;
-        }
-
-        .contact-form input::placeholder,
-        .contact-form textarea::placeholder {
-            color: #b8b8d4;
-        }
-
-        .contact-form textarea {
-            min-height: 150px;
-            resize: vertical;
-        }
-
-        .submit-button {
-            padding: 15px 40px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-
-        .submit-button:hover {
-            transform: translateY(-3px);
         }
 
         /* Footer */
         footer {
-            padding: 40px 0;
-            text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #b8b8d4;
+            padding: 80px 0 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        .footer-brand h3 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-brand p {
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .footer-links h4 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #ffffff;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
         }
 
         /* Responsive */
+        @media (max-width: 1024px) {
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
         @media (max-width: 768px) {
             .hero h1 {
-                font-size: 36px;
+                font-size: 42px;
+            }
+
+            .hero p {
+                font-size: 18px;
             }
 
             .nav-links {
                 display: none;
             }
 
+            .container {
+                padding: 0 20px;
+            }
+
+            .section-header h2 {
+                font-size: 36px;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+
             .tool-header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 10px;
+            }
+
+            .cta-card {
+                padding: 50px 30px;
+            }
+
+            .cta-card h2 {
+                font-size: 32px;
             }
         }
     </style>
 </head>
 <body>
+    <div class="bg-gradient"></div>
+
     <nav>
         <div class="container">
-            <div class="logo">OptiForce Analytics</div>
+            <div class="logo">OptiForce</div>
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
                 <li><a href="#tools">Tools</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="how-it-works.html">How It Works</a></li>
             </ul>
         </div>
     </nav>
 
     <section class="hero">
         <div class="container">
-            <h1>Transform Your Workforce Data Into Insights</h1>
-            <p>Professional-grade analytics tools for workforce optimization, productivity analysis, and business intelligence</p>
-            <a href="#tools" class="cta-button">Explore Our Tools</a>
+            <div class="hero-badge">🚀 Free to Use • No Installation Required</div>
+            <h1>Enterprise Workforce<br>Intelligence Platform</h1>
+            <p>Transform manual HR processes into automated, data-driven insights. Upload your data and get instant analysis in seconds.</p>
+            <div class="hero-buttons">
+                <a href="#tools" class="btn-primary">Try Our Tools →</a>
+                <a href="how-it-works.html" class="btn-secondary">See How It Works</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="trust-section">
+        <div class="container">
+            <div class="trust-text">Powered by Advanced Analytics</div>
+            <div class="trust-stats">
+                <div class="trust-stat">
+                    <div class="trust-number">100%</div>
+                    <div class="trust-label">Browser-Based</div>
+                </div>
+                <div class="trust-stat">
+                    <div class="trust-number">0s</div>
+                    <div class="trust-label">Setup Time</div>
+                </div>
+                <div class="trust-stat">
+                    <div class="trust-number">95%</div>
+                    <div class="trust-label">Time Saved</div>
+                </div>
+                <div class="trust-stat">
+                    <div class="trust-number">24/7</div>
+                    <div class="trust-label">Available</div>
+                </div>
+            </div>
         </div>
     </section>
 
     <section id="features" class="features">
         <div class="container">
-            <h2>Why Choose OptiForce?</h2>
+            <div class="section-header">
+                <div class="section-badge">Why OptiForce</div>
+                <h2>Built for Modern HR Teams</h2>
+                <p>Enterprise-grade features that eliminate manual work and deliver actionable insights instantly.</p>
+            </div>
             <div class="feature-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">📊</div>
+                    <span class="feature-icon">🎯</span>
                     <h3>Instant Analysis</h3>
-                    <p>Upload your Excel or CSV files and get comprehensive insights within seconds. No installation required.</p>
+                    <p>Upload your data and receive comprehensive insights in seconds. No complex setup, no technical knowledge required.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🔒</div>
+                    <span class="feature-icon">🔒</span>
                     <h3>100% Secure</h3>
-                    <p>All processing happens in your browser. Your data never leaves your device, ensuring complete privacy.</p>
+                    <p>All processing happens in your browser. Your sensitive data never touches our servers, ensuring complete privacy and compliance.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3>No Setup Required</h3>
-                    <p>Browser-based tools mean zero installation. Access powerful analytics from any device, anywhere.</p>
+                    <span class="feature-icon">⚡</span>
+                    <h3>Zero Installation</h3>
+                    <p>Browser-based platform means instant access from any device. No downloads, no IT approval needed.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">💼</div>
-                    <h3>Enterprise Ready</h3>
-                    <p>Built for businesses of all sizes. From startups to Fortune 500 companies.</p>
+                    <span class="feature-icon">📊</span>
+                    <h3>McKinsey-Level Insights</h3>
+                    <p>Get consulting-grade analysis including 9-Box Grid, span of control, and predictive analytics at a fraction of the cost.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📈</div>
-                    <h3>Actionable Insights</h3>
-                    <p>Get clear, actionable recommendations based on your data patterns and trends.</p>
+                    <span class="feature-icon">🤖</span>
+                    <h3>AI-Powered Recommendations</h3>
+                    <p>Machine learning algorithms detect patterns and provide actionable recommendations automatically.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🎯</div>
-                    <h3>Customizable Reports</h3>
-                    <p>Generate professional reports tailored to your specific business needs.</p>
+                    <span class="feature-icon">📈</span>
+                    <h3>Real-Time Dashboards</h3>
+                    <p>Beautiful, interactive visualizations that make complex data understandable for all stakeholders.</p>
                 </div>
             </div>
         </div>
@@ -415,21 +688,24 @@
 
     <section id="tools" class="tools">
         <div class="container">
-            <h2>Our Analytics Tools</h2>
-            <p class="tools-subtitle">Upload your data and unlock powerful insights for better decision making</p>
+            <div class="section-header">
+                <div class="section-badge">Our Platform</div>
+                <h2>Professional Analytics Tools</h2>
+                <p>Click any tool below to start analyzing your workforce data instantly.</p>
+            </div>
 
             <div class="tool-card">
                 <div class="tool-header">
                     <h3>Workforce & Org Structure Analyzer</h3>
                     <span class="tool-badge">POPULAR</span>
                 </div>
-                <p>Complete organizational analytics including interactive org charts, span of control analysis, hierarchy visualization, and workforce optimization. Analyze reporting structures, identify bottlenecks, and get McKinsey-level insights instantly.</p>
+                <p>Complete organizational analytics including interactive org charts, span of control analysis, hierarchy visualization, and workforce optimization. Identify bottlenecks, optimize reporting structures, and get strategic insights instantly.</p>
                 <div class="tool-features">
-                    <span class="tool-tag">Org Charts</span>
-                    <span class="tool-tag">Span of Control</span>
-                    <span class="tool-tag">Hierarchy Analysis</span>
-                    <span class="tool-tag">Cost Optimization</span>
-                    <span class="tool-tag">Excel/CSV Import</span>
+                    <span class="tool-tag">📊 Org Charts</span>
+                    <span class="tool-tag">👥 Span of Control</span>
+                    <span class="tool-tag">🏢 Hierarchy Analysis</span>
+                    <span class="tool-tag">💰 Cost Optimization</span>
+                    <span class="tool-tag">📁 Excel/CSV Import</span>
                 </div>
                 <a href="workforce-analyzer.html" class="tool-button">Launch Tool →</a>
             </div>
@@ -437,15 +713,15 @@
             <div class="tool-card">
                 <div class="tool-header">
                     <h3>Employee Performance Dashboard</h3>
-                    <span class="tool-badge">NEW</span>
+                    <span class="tool-badge new">NEW</span>
                 </div>
                 <p>Enterprise-grade performance analytics with 9-Box Grid talent matrix, 360-degree feedback analysis, flight risk prediction, ROI calculations, and AI-powered insights. Complete talent management and succession planning in one powerful tool.</p>
                 <div class="tool-features">
-                    <span class="tool-tag">9-Box Grid</span>
+                    <span class="tool-tag">🎯 9-Box Grid</span>
                     <span class="tool-tag">360° Feedback</span>
-                    <span class="tool-tag">Flight Risk Analysis</span>
-                    <span class="tool-tag">Predictive Analytics</span>
-                    <span class="tool-tag">AI Insights</span>
+                    <span class="tool-tag">⚠️ Flight Risk</span>
+                    <span class="tool-tag">🔮 Predictive Analytics</span>
+                    <span class="tool-tag">🤖 AI Insights</span>
                 </div>
                 <a href="performance-dashboard.html" class="tool-button">Launch Tool →</a>
             </div>
@@ -455,14 +731,14 @@
                     <h3>Resource Planning Calculator</h3>
                     <span class="tool-badge coming-soon">COMING SOON</span>
                 </div>
-                <p>Optimize your resource allocation with data-driven insights. Upload project timelines and resource availability to create optimal schedules, detect conflicts, and maximize team utilization.</p>
+                <p>Optimize resource allocation with data-driven insights. Upload project timelines and resource availability to create optimal schedules, detect conflicts, and maximize team utilization.</p>
                 <div class="tool-features">
-                    <span class="tool-tag">Capacity Planning</span>
-                    <span class="tool-tag">Resource Allocation</span>
-                    <span class="tool-tag">Conflict Detection</span>
-                    <span class="tool-tag">Timeline Optimization</span>
+                    <span class="tool-tag">📅 Capacity Planning</span>
+                    <span class="tool-tag">🎯 Resource Allocation</span>
+                    <span class="tool-tag">⚠️ Conflict Detection</span>
+                    <span class="tool-tag">⏱️ Timeline Optimization</span>
                 </div>
-                <a href="#contact" class="tool-button secondary">Request Early Access →</a>
+                <a href="#tools" class="tool-button secondary">Coming Soon</a>
             </div>
 
             <div class="tool-card">
@@ -470,46 +746,66 @@
                     <h3>Payroll Cost Analyzer</h3>
                     <span class="tool-badge coming-soon">COMING SOON</span>
                 </div>
-                <p>Get deep insights into your payroll expenses. Analyze salary distributions, overtime costs, budget forecasting, and identify opportunities for significant cost savings.</p>
+                <p>Deep insights into payroll expenses with salary distribution analysis, overtime cost breakdown, budget forecasting, and identification of significant cost-saving opportunities.</p>
                 <div class="tool-features">
-                    <span class="tool-tag">Cost Breakdown</span>
-                    <span class="tool-tag">Overtime Analysis</span>
-                    <span class="tool-tag">Budget Forecasting</span>
-                    <span class="tool-tag">Savings Opportunities</span>
+                    <span class="tool-tag">💵 Cost Breakdown</span>
+                    <span class="tool-tag">⏰ Overtime Analysis</span>
+                    <span class="tool-tag">📊 Budget Forecasting</span>
+                    <span class="tool-tag">💡 Savings Opportunities</span>
                 </div>
-                <a href="#contact" class="tool-button secondary">Request Early Access →</a>
+                <a href="#tools" class="tool-button secondary">Coming Soon</a>
             </div>
         </div>
     </section>
 
-    <section id="contact" class="cta-section">
+    <section class="cta-section">
         <div class="container">
-            <h2>Ready to Optimize Your Workforce?</h2>
-            <p>Get in touch to learn more about our tools or request custom analytics solutions</p>
-            <form class="contact-form" onsubmit="handleSubmit(event)">
-                <input type="text" placeholder="Company Name" required>
-                <input type="email" placeholder="Work Email" required>
-                <input type="tel" placeholder="Phone Number" required>
-                <textarea placeholder="Tell us about your needs..." required></textarea>
-                <button type="submit" class="submit-button">Request Demo</button>
-            </form>
+            <div class="cta-card">
+                <h2>Ready to Automate Your Workflow?</h2>
+                <p>Stop wasting time on manual processes. Start analyzing your workforce data in seconds.</p>
+                <a href="#tools" class="btn-primary">Try Tools Now →</a>
+            </div>
         </div>
     </section>
 
     <footer>
         <div class="container">
-            <p>&copy; 2025 OptiForce Analytics. All rights reserved. | Making workforce optimization accessible to every business.</p>
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>OptiForce Analytics</h3>
+                    <p>Enterprise workforce intelligence platform automating manual HR processes with data-driven insights. Free to use, no installation required.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#tools">Tools</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="how-it-works.html">How It Works</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="how-it-works.html">How It Works</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 OptiForce Analytics. All rights reserved. Enterprise Workforce Intelligence Platform.</p>
+            </div>
         </div>
     </footer>
 
     <script>
-        function handleSubmit(event) {
-            event.preventDefault();
-            alert('Thank you for your interest! We will contact you shortly.\n\nNote: In production, this would connect to your email service or CRM.');
-            event.target.reset();
-        }
-
-        // Smooth scrolling for navigation links
+        // Smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -522,4 +818,3 @@
     </script>
 </body>
 </html>
-
