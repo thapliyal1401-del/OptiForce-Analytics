@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How It Works - OptiForce Analytics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3), transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(74, 86, 226, 0.3), transparent 50%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        nav {
+            padding: 25px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .back-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .hero {
+            padding: 100px 0 60px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 64px;
+            font-weight: 800;
+            margin-bottom: 25px;
+            letter-spacing: -2px;
+        }
+
+        .hero p {
+            font-size: 22px;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .steps-section {
+            padding: 80px 0;
+        }
+
+        .step {
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            gap: 40px;
+            margin-bottom: 80px;
+            align-items: start;
+        }
+
+        .step-number {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: 800;
+        }
+
+        .step-content h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .step-content p {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .benefit-list {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .benefit-list h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .benefit-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .benefit-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .benefit-list li:last-child {
+            border-bottom: none;
+        }
+
+        .comparison-section {
+            padding: 80px 0;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .comparison-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+        }
+
+        .comparison-card.old {
+            border-color: rgba(255, 68, 68, 0.3);
+        }
+
+        .comparison-card.new {
+            border-color: rgba(74, 222, 128, 0.3);
+            background: rgba(74, 222, 128, 0.05);
+        }
+
+        .comparison-card h3 {
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+
+        .comparison-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .comparison-card li {
+            padding: 15px 0;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .cta-section {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            padding: 18px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.6);
+        }
+
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 42px;
+            }
+
+            .step {
+                grid-template-columns: 1fr;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo">OptiForce</a>
+            <a href="index.html" class="back-link">← Back to Home</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>How It Works</h1>
+            <p>From manual chaos to automated insights in three simple steps</p>
+        </div>
+    </section>
+
+    <section class="steps-section">
+        <div class="container">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h2>Upload Your Data</h2>
+                    <p>Simply upload your Excel or CSV file containing employee information. No complex formatting required – our intelligent parser handles various data structures automatically.</p>
+                    <p>We support standard HR data formats including employee IDs, names, departments, performance scores, salary information, reporting structures, and more.</p>
+                    <div class="benefit-list">
+                        <h3>✅ What makes this special:</h3>
+                        <ul>
+                            <li>📁 Drag & drop interface – no technical skills needed</li>
+                            <li>🔒 100% secure – data never leaves your browser</li>
+                            <li>⚡ Instant processing – no waiting for uploads</li>
+                            <li>📊 Smart detection – automatically identifies data types</li>
+                            <li>✨ Flexible formats – works with your existing spreadsheets</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h2>Automatic Analysis</h2>
+                    <p>Our advanced algorithms immediately analyze your data, calculating dozens of metrics, building organizational hierarchies, detecting patterns, and identifying optimization opportunities.</p>
+                    <p>Within seconds, we perform analysis that would typically require:</p>
+                    <div class="benefit-list">
+                        <h3>🤖 Behind the scenes, we:</h3>
+                        <ul>
+                            <li>🏢 Build complete organizational structures with hierarchy detection</li>
+                            <li>👥 Calculate span of control and management efficiency</li>
+                            <li>📊 Generate 9-Box Grid talent matrices for succession planning</li>
+                            <li>🎯 Analyze 360-degree feedback discrepancies</li>
+                            <li>⚠️ Predict flight risk based on performance patterns</li>
+                            <li>💰 Calculate ROI, cost per employee, and budget impacts</li>
+                            <li>📈 Generate trend forecasts and predictive insights</li>
+                            <li>🔍 Identify outliers, bottlenecks, and inefficiencies</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h2>Get Actionable Insights</h2>
+                    <p>Receive beautiful, interactive dashboards and reports that anyone can understand – from HR managers to C-suite executives. Every insight comes with clear recommendations.</p>
+                    <p>Unlike traditional analytics tools that bury you in numbers, we focus on answering the questions that matter:</p>
+                    <div class="benefit-list">
+                        <h3>💡 You'll discover:</h3>
+                        <ul>
+                            <li>🌟 Who your star performers are (and how to retain them)</li>
+                            <li>⚠️ Which employees are at risk of leaving</li>
+                            <li>🏢 Where organizational bottlenecks exist</li>
+                            <li>👥 Which managers are overloaded or underutilized</li>
+                            <li>💰 Where you can optimize costs without sacrificing quality</li>
+                            <li>🎯 Who has high potential for leadership roles</li>
+                            <li>📊 How your departments compare to each other</li>
+                            <li>🚀 What actions to take in the next 30/90/180 days</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="comparison-section">
+        <div class="container">
+            <h2 style="text-align: center; font-size: 48px; margin-bottom: 20px;">The Old Way vs. The OptiForce Way</h2>
+            <p style="text-align: center; font-size: 20px; color: rgba(255, 255, 255, 0.7); margin-bottom: 60px;">See why 500+ organizations have made the switch</p>
+            
+            <div class="comparison-grid">
+                <div class="comparison-card old">
+                    <h3>❌ Traditional Manual Process</h3>
+                    <ul>
+                        <li>⏰ 2-4 weeks to create org charts manually</li>
+                        <li>📧 Endless email chains to gather data</li>
+                        <li>📊 Hours formatting Excel spreadsheets</li>
+                        <li>🤦 Manual calculation errors</li>
+                        <li>💰 $10K-50K for analytics software</li>
+                        <li>📚 Weeks of training required</li>
+                        <li>🔄 Outdated by the time it's finished</li>
+                        <li>😤 Frustrating for everyone involved</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-card new">
+                    <h3>✅ With OptiForce Analytics</h3>
+                    <ul>
+                        <li>⚡ Instant analysis in 30 seconds</li>
+                        <li>📁 Simple file upload – done</li>
+                        <li>🎨 Beautiful dashboards automatically generated</li>
+                        <li>🎯 100% accurate calculations</li>
+                        <li>🆓 Free to start, affordable to scale</li>
+                        <li>🚀 Zero training – intuitive interface</li>
+                        <li>🔄 Real-time updates whenever you need them</li>
+                        <li>😊 Delightful user experience</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2 style="font-size: 42px; margin-bottom: 20px;">Ready to Automate Your Workflow?</h2>
+            <p style="font-size: 20px; color: rgba(255, 255, 255, 0.7); margin-bottom: 40px;">Join the automation revolution. Start analyzing in seconds.</p>
+            <a href="index.html#tools" class="btn-primary">Try It Now – It's Free →</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 OptiForce Analytics. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

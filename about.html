@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - OptiForce Analytics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3), transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(74, 86, 226, 0.3), transparent 50%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        nav {
+            padding: 25px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .back-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            color: #ffffff;
+        }
+
+        .hero {
+            padding: 100px 0 60px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 64px;
+            font-weight: 800;
+            margin-bottom: 25px;
+            letter-spacing: -2px;
+        }
+
+        .hero p {
+            font-size: 22px;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .content-section {
+            padding: 80px 0;
+        }
+
+        .content-section h2 {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 30px;
+        }
+
+        .content-section p {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .mission-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 50px;
+            margin: 40px 0;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .value-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 35px;
+        }
+
+        .value-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .value-card p {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .cta-section {
+            padding: 80px 0;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.02);
+            margin-top: 80px;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            padding: 18px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.6);
+        }
+
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 42px;
+            }
+
+            .container {
+                padding: 0 20px;
+            }
+
+            .values-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo">OptiForce</a>
+            <a href="index.html" class="back-link">← Back to Home</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>About OptiForce</h1>
+            <p>We're on a mission to eliminate needless manual work and empower organizations with intelligent automation.</p>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="mission-card">
+                <h2>Our Mission</h2>
+                <p>At OptiForce, we believe that valuable human talent shouldn't be wasted on repetitive manual processes. HR teams, managers, and executives spend countless hours manipulating spreadsheets, creating reports, and analyzing data that could be automated.</p>
+                <p style="margin-top: 20px;">Our mission is to <strong>automate the mundane and illuminate the meaningful</strong>. We transform complex workforce data into clear, actionable insights that anyone can understand – from entry-level managers to C-suite executives.</p>
+            </div>
+
+            <h2>The Problem We're Solving</h2>
+            <p>Every day, organizations waste thousands of hours on:</p>
+            <ul style="margin: 30px 0; font-size: 18px; color: rgba(255, 255, 255, 0.8); line-height: 2;">
+                <li>📊 <strong>Manual data entry and consolidation</strong> – copying data between systems</li>
+                <li>📈 <strong>Creating basic reports</strong> – formatting charts and graphs in Excel</li>
+                <li>🔍 <strong>Analyzing performance trends</strong> – calculating averages and percentages</li>
+                <li>🏢 <strong>Drawing org charts</strong> – manually updating PowerPoint slides</li>
+                <li>💰 <strong>Budget calculations</strong> – tracking costs across departments</li>
+            </ul>
+            <p>These tasks are necessary, but they don't require human creativity or judgment. They're perfect for automation.</p>
+
+            <h2 style="margin-top: 80px;">Our Solution</h2>
+            <p>OptiForce transforms weeks of manual work into seconds of automated analysis. Upload your data, and instantly receive:</p>
+            <ul style="margin: 30px 0; font-size: 18px; color: rgba(255, 255, 255, 0.8); line-height: 2;">
+                <li>✅ <strong>Interactive organizational charts</strong> with automatic hierarchy detection</li>
+                <li>✅ <strong>Span of control analysis</strong> identifying overloaded managers</li>
+                <li>✅ <strong>Performance dashboards</strong> with 9-Box Grid and 360° feedback</li>
+                <li>✅ <strong>Predictive analytics</strong> showing flight risk and future trends</li>
+                <li>✅ <strong>AI-powered recommendations</strong> for optimization opportunities</li>
+            </ul>
+            <p>Most importantly: <strong>we present complex data in a way that's easy to understand and act upon</strong>. No PhD in statistics required.</p>
+
+            <h2 style="margin-top: 80px;">Why We Built This</h2>
+            <p>After watching countless organizations struggle with outdated HR analytics tools that cost thousands per month and require weeks of training, we knew there had to be a better way.</p>
+            <p>We built OptiForce to be:</p>
+            <ul style="margin: 30px 0; font-size: 18px; color: rgba(255, 255, 255, 0.8); line-height: 2;">
+                <li>💡 <strong>Instantly usable</strong> – no training, no installation, no IT approval</li>
+                <li>🔒 <strong>100% private</strong> – your data never leaves your browser</li>
+                <li>🚀 <strong>Lightning fast</strong> – results in seconds, not hours</li>
+                <li>👥 <strong>Client-friendly</strong> – beautiful reports anyone can understand</li>
+                <li>💰 <strong>Affordable</strong> – enterprise features without enterprise prices</li>
+            </ul>
+
+            <h2 style="margin-top: 80px;">Our Values</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <h3>🎯 Simplicity First</h3>
+                    <p>Complex problems deserve simple solutions. We make powerful analytics accessible to everyone, regardless of technical background.</p>
+                </div>
+                <div class="value-card">
+                    <h3>🔒 Privacy by Design</h3>
+                    <p>Your data is yours. We process everything in your browser, ensuring your sensitive information never touches our servers.</p>
+                </div>
+                <div class="value-card">
+                    <h3>⚡ Speed Matters</h3>
+                    <p>Time is your most valuable resource. We deliver insights in seconds so you can focus on making decisions, not waiting for reports.</p>
+                </div>
+                <div class="value-card">
+                    <h3>📊 Actionable Over Academic</h3>
+                    <p>We don't just show you numbers – we tell you what they mean and what to do about them. Every insight comes with recommendations.</p>
+                </div>
+                <div class="value-card">
+                    <h3>🌍 Democratizing Analytics</h3>
+                    <p>Enterprise-grade analytics shouldn't cost enterprise prices. We're making world-class tools accessible to organizations of all sizes.</p>
+                </div>
+                <div class="value-card">
+                    <h3>🚀 Continuous Innovation</h3>
+                    <p>The workplace is evolving. We're constantly adding new tools and features to help you stay ahead of the curve.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2 style="font-size: 42px; margin-bottom: 20px;">Join 500+ Organizations</h2>
+            <p style="font-size: 20px; color: rgba(255, 255, 255, 0.7); margin-bottom: 40px;">Experience the power of automated workforce analytics</p>
+            <a href="index.html#tools" class="btn-primary">Explore Our Tools →</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 OptiForce Analytics. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
