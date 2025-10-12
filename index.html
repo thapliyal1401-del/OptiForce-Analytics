@@ -5,19 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- GOOGLE SEARCH CONSOLE VERIFICATION -->
-    <!-- REPLACE "YOUR_VERIFICATION_CODE_HERE" with your actual code from Google Search Console -->
     <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE_HERE">
     
     <!-- SEO Meta Tags -->
     <meta name="description" content="Professional workforce optimization and business intelligence tools. Upload your data and get instant insights for better decision making. Free HR analytics tools with 9-Box Grid, org charts, and performance dashboards.">
     <meta name="keywords" content="workforce optimization, business intelligence, data analysis, HR analytics, productivity tools, 9-box grid, org chart, performance dashboard, talent management">
-    <meta name="author" content="OptiForce Analytics">
-    
-    <!-- Open Graph / Social Media -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="OptiForce Analytics - Workforce Optimization Tools">
-    <meta property="og:description" content="Transform workforce data into actionable insights in seconds. Free HR analytics tools.">
-    <meta property="og:image" content="https://your-domain.com/og-image.png">
     
     <title>OptiForce Analytics - Free Workforce Optimization & HR Analytics Tools</title>
     
@@ -194,8 +186,6 @@
             box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
             border: none;
             cursor: pointer;
-            position: relative;
-            z-index: 10;
         }
 
         .btn-primary:hover {
@@ -213,8 +203,6 @@
             font-size: 16px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s;
-            position: relative;
-            z-index: 10;
         }
 
         .btn-secondary:hover {
@@ -261,6 +249,30 @@
             justify-content: center;
             margin-bottom: 20px;
             position: relative;
+            overflow: hidden;
+        }
+
+        .animated-demo {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.4);
+            transition: all 0.3s;
+        }
+
+        .video-card:hover .play-overlay {
+            background: rgba(0, 0, 0, 0.6);
         }
 
         .play-icon {
@@ -283,6 +295,7 @@
             border-radius: 4px;
             font-size: 12px;
             font-weight: 600;
+            z-index: 10;
         }
 
         .video-card h3 {
@@ -432,7 +445,6 @@
             font-size: 15px;
         }
 
-        /* Tooltip Styles */
         .tooltip-icon {
             display: inline-block;
             width: 18px;
@@ -614,10 +626,6 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .tool-button.secondary:hover {
-            background: rgba(255, 255, 255, 0.08);
-        }
-
         .sample-btn {
             background: rgba(102, 126, 234, 0.2);
             border: 1px solid rgba(102, 126, 234, 0.4);
@@ -627,11 +635,102 @@
             background: rgba(74, 222, 128, 0.2);
             border: 1px solid rgba(74, 222, 128, 0.4);
             color: #4ade80;
-            font-weight: 700;
         }
 
-        .demo-btn:hover {
-            background: rgba(74, 222, 128, 0.3);
+        /* Sample Selection Modal */
+        .sample-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sample-modal.active {
+            display: flex;
+        }
+
+        .sample-modal-content {
+            background: linear-gradient(135deg, rgba(20, 20, 30, 0.95), rgba(30, 30, 40, 0.95));
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .modal-close:hover {
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        .sample-modal h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .sample-modal p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 30px;
+        }
+
+        .sample-options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .sample-option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .sample-option:hover {
+            border-color: rgba(102, 126, 234, 0.5);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .sample-option h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: #667eea;
+        }
+
+        .sample-option p {
+            font-size: 14px;
+            margin-bottom: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .sample-fields {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            font-style: italic;
         }
 
         .cta-section {
@@ -660,7 +759,6 @@
             margin-bottom: 40px;
         }
 
-        /* Contact Modal */
         .contact-modal {
             display: none;
             position: fixed;
@@ -687,23 +785,6 @@
             max-width: 600px;
             width: 90%;
             position: relative;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 30px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .modal-close:hover {
-            color: #fff;
-            transform: rotate(90deg);
         }
 
         .modal-content h2 {
@@ -833,46 +914,20 @@
             .hero h1 {
                 font-size: 42px;
             }
-
-            .hero p {
-                font-size: 18px;
-            }
-
             .nav-links {
                 display: none;
             }
-
             .container {
                 padding: 0 20px;
             }
-
             .section-header h2 {
                 font-size: 36px;
             }
-
             .feature-grid {
                 grid-template-columns: 1fr;
             }
-
             .footer-content {
                 grid-template-columns: 1fr;
-            }
-
-            .tool-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .cta-card {
-                padding: 50px 30px;
-            }
-
-            .cta-card h2 {
-                font-size: 32px;
-            }
-
-            .modal-content {
-                padding: 30px;
             }
         }
     </style>
@@ -929,38 +984,47 @@
         </div>
     </section>
 
-    <!-- Video Tutorials Section -->
+    <!-- Video Tutorials Section with Animated Demos -->
     <section id="videos" class="video-section">
         <div class="container">
             <div class="section-header">
-                <div class="section-badge">Learn in Minutes</div>
+                <div class="section-badge">Learn in 2 Minutes</div>
                 <h2>Quick Video Tutorials</h2>
                 <p>See how easy it is to transform your workforce data into actionable insights</p>
             </div>
             <div class="video-grid">
-                <div class="video-card" onclick="alert('Tutorial video coming soon! Each tool will have a 2-minute walkthrough.')">
+                <div class="video-card" onclick="playVideo(1)">
                     <div class="video-thumbnail">
-                        <div class="play-icon">▶️</div>
+                        <canvas id="demo1" class="animated-demo" width="600" height="400"></canvas>
+                        <div class="play-overlay">
+                            <div class="play-icon">▶️</div>
+                        </div>
                         <div class="video-duration">2:15</div>
                     </div>
-                    <h3>How to Use Workforce Analyzer</h3>
-                    <p>Learn how to create org charts and analyze span of control in under 3 minutes</p>
+                    <h3>Workforce Analyzer Tutorial</h3>
+                    <p>Upload CSV → See org charts, span of control, and hierarchy analysis instantly</p>
                 </div>
-                <div class="video-card" onclick="alert('Tutorial video coming soon! Each tool will have a 2-minute walkthrough.')">
+                <div class="video-card" onclick="playVideo(2)">
                     <div class="video-thumbnail">
-                        <div class="play-icon">▶️</div>
+                        <canvas id="demo2" class="animated-demo" width="600" height="400"></canvas>
+                        <div class="play-overlay">
+                            <div class="play-icon">▶️</div>
+                        </div>
                         <div class="video-duration">2:30</div>
                     </div>
                     <h3>Performance Dashboard Walkthrough</h3>
-                    <p>Master the 9-Box Grid and flight risk analysis with this quick guide</p>
+                    <p>Master 9-Box Grid, flight risk analysis, and 360° feedback in minutes</p>
                 </div>
-                <div class="video-card" onclick="alert('Tutorial video coming soon! Each tool will have a 2-minute walkthrough.')">
+                <div class="video-card" onclick="playVideo(3)">
                     <div class="video-thumbnail">
-                        <div class="play-icon">▶️</div>
+                        <canvas id="demo3" class="animated-demo" width="600" height="400"></canvas>
+                        <div class="play-overlay">
+                            <div class="play-icon">▶️</div>
+                        </div>
                         <div class="video-duration">1:45</div>
                     </div>
-                    <h3>Getting Started with Sample Data</h3>
-                    <p>Download and upload sample data to see instant results</p>
+                    <h3>Sample Data & Getting Started</h3>
+                    <p>Download sample files and see instant results with zero setup</p>
                 </div>
             </div>
         </div>
@@ -994,38 +1058,22 @@
                 </div>
                 <div class="feature-card">
                     <span class="feature-icon">⚡</span>
-                    <h3>Zero Installation 
-                        <span class="tooltip-icon">?
-                            <span class="tooltip-content">No software to download or install. Works instantly in any modern web browser on desktop, tablet, or mobile.</span>
-                        </span>
-                    </h3>
+                    <h3>Zero Installation</h3>
                     <p>Browser-based platform means instant access from any device. No downloads, no IT approval needed.</p>
                 </div>
                 <div class="feature-card">
                     <span class="feature-icon">📊</span>
-                    <h3>McKinsey-Level Insights 
-                        <span class="tooltip-icon">?
-                            <span class="tooltip-content">Get the same quality analysis used by top consulting firms: 9-Box Grid for talent assessment, span of control optimization, and predictive workforce analytics.</span>
-                        </span>
-                    </h3>
+                    <h3>McKinsey-Level Insights</h3>
                     <p>Get consulting-grade analysis including 9-Box Grid, span of control, and predictive analytics at a fraction of the cost.</p>
                 </div>
                 <div class="feature-card">
                     <span class="feature-icon">🤖</span>
-                    <h3>AI-Powered Recommendations 
-                        <span class="tooltip-icon">?
-                            <span class="tooltip-content">Machine learning algorithms automatically identify patterns, detect anomalies, and provide actionable recommendations to optimize your workforce.</span>
-                        </span>
-                    </h3>
+                    <h3>AI-Powered Recommendations</h3>
                     <p>Machine learning algorithms detect patterns and provide actionable recommendations automatically.</p>
                 </div>
                 <div class="feature-card">
                     <span class="feature-icon">📈</span>
-                    <h3>Real-Time Dashboards 
-                        <span class="tooltip-icon">?
-                            <span class="tooltip-content">Interactive charts and graphs that update instantly as you explore your data. Click, filter, and drill down for deeper insights.</span>
-                        </span>
-                    </h3>
+                    <h3>Real-Time Dashboards</h3>
                     <p>Beautiful, interactive visualizations that make complex data understandable for all stakeholders.</p>
                 </div>
             </div>
@@ -1056,7 +1104,7 @@
                 <div class="tool-actions">
                     <a href="workforce-analyzer.html" class="tool-button">Launch Tool →</a>
                     <button class="tool-button demo-btn" onclick="launchWithSampleData('workforce')">⚡ Try Live Demo</button>
-                    <button class="tool-button sample-btn" onclick="downloadWorkforceSample()">📥 Download Sample</button>
+                    <button class="tool-button sample-btn" onclick="openSampleModal('workforce')">📥 Choose Sample Data</button>
                 </div>
             </div>
 
@@ -1076,7 +1124,7 @@
                 <div class="tool-actions">
                     <a href="performance-dashboard.html" class="tool-button">Launch Tool →</a>
                     <button class="tool-button demo-btn" onclick="launchWithSampleData('performance')">⚡ Try Live Demo</button>
-                    <button class="tool-button sample-btn" onclick="downloadPerformanceSample()">📥 Download Sample</button>
+                    <button class="tool-button sample-btn" onclick="openSampleModal('performance')">📥 Choose Sample Data</button>
                 </div>
             </div>
 
@@ -1094,21 +1142,6 @@
                 </div>
                 <button class="tool-button secondary" onclick="openContactModal()">Notify Me When Ready</button>
             </div>
-
-            <div class="tool-card">
-                <div class="tool-header">
-                    <h3>Payroll Cost Analyzer</h3>
-                    <span class="tool-badge coming-soon">COMING SOON</span>
-                </div>
-                <p>Deep insights into payroll expenses with salary distribution analysis, overtime cost breakdown, budget forecasting, and identification of significant cost-saving opportunities.</p>
-                <div class="tool-features">
-                    <span class="tool-tag">💵 Cost Breakdown</span>
-                    <span class="tool-tag">⏰ Overtime Analysis</span>
-                    <span class="tool-tag">📊 Budget Forecasting</span>
-                    <span class="tool-tag">💡 Savings Opportunities</span>
-                </div>
-                <button class="tool-button secondary" onclick="openContactModal()">Notify Me When Ready</button>
-            </div>
         </div>
     </section>
 
@@ -1121,6 +1154,16 @@
             </div>
         </div>
     </section>
+
+    <!-- Sample Selection Modal -->
+    <div id="sampleModal" class="sample-modal">
+        <div class="sample-modal-content">
+            <button class="modal-close" onclick="closeSampleModal()">×</button>
+            <h2>Choose Your Sample Data</h2>
+            <p>Select the analysis type that matches your needs. Each file contains all required fields.</p>
+            <div id="sampleOptions" class="sample-options"></div>
+        </div>
+    </div>
 
     <!-- Contact Modal -->
     <div id="contactModal" class="contact-modal">
@@ -1169,132 +1212,198 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 OptiForce Analytics. All rights reserved. Enterprise Workforce Intelligence Platform.</p>
+                <p>&copy; 2025 OptiForce Analytics. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
+    <script src="sample-data.js"></script>
     <script>
-        // Sample data for Workforce Analyzer (30 employees with complete org structure)
-        function downloadWorkforceSample() {
-            const csvData = `Employee ID,Employee Name,Manager Name,Department,Job Title,Location,Employment Type,Salary,Hire Date
-E001,Sarah Johnson,Michael Chen,Engineering,Senior Software Engineer,New York,Full-time,125000,2020-03-15
-E002,David Martinez,Michael Chen,Engineering,Software Engineer,New York,Full-time,95000,2021-06-01
-E003,Emily Watson,Michael Chen,Engineering,Software Engineer,Remote,Full-time,98000,2021-09-12
-E004,Michael Chen,Jennifer Adams,Engineering,Engineering Manager,New York,Full-time,165000,2018-11-20
-E005,James Wilson,Jennifer Adams,Engineering,Senior Engineering Manager,San Francisco,Full-time,185000,2017-05-08
-E006,Jennifer Adams,Robert Taylor,Engineering,VP of Engineering,New York,Full-time,245000,2016-02-14
-E007,Lisa Anderson,Robert Taylor,Product,VP of Product,San Francisco,Full-time,235000,2017-08-22
-E008,Robert Taylor,,Executive,Chief Technology Officer,New York,Full-time,325000,2015-01-10
-E009,Maria Garcia,Lisa Anderson,Product,Senior Product Manager,San Francisco,Full-time,145000,2019-04-18
-E010,John Smith,Lisa Anderson,Product,Product Manager,Remote,Full-time,115000,2020-11-03
-E011,Amanda Brown,Lisa Anderson,Product,Product Manager,San Francisco,Full-time,118000,2021-02-25
-E012,Christopher Lee,Sarah Thompson,Marketing,Marketing Manager,New York,Full-time,105000,2020-07-14
-E013,Sarah Thompson,Robert Taylor,Marketing,VP of Marketing,New York,Full-time,215000,2018-03-30
-E014,Daniel Kim,Sarah Thompson,Marketing,Content Marketing Manager,Remote,Full-time,95000,2021-05-20
-E015,Jessica Taylor,Daniel Kim,Marketing,Content Writer,Remote,Full-time,65000,2022-01-08
-E016,Ryan Miller,Daniel Kim,Marketing,Content Writer,Remote,Full-time,68000,2022-03-15
-E017,Michelle Davis,Christopher Lee,Marketing,Social Media Manager,New York,Full-time,75000,2021-08-10
-E018,Kevin White,Christopher Lee,Marketing,Marketing Coordinator,New York,Full-time,58000,2022-06-01
-E019,Patricia Moore,Thomas Anderson,Sales,Sales Representative,San Francisco,Full-time,85000,2021-04-12
-E020,Thomas Anderson,Rachel Kim,Sales,Sales Manager,San Francisco,Full-time,125000,2019-09-05
-E021,Rachel Kim,Robert Taylor,Sales,VP of Sales,San Francisco,Full-time,225000,2017-12-18
-E022,Brian Jackson,Rachel Kim,Sales,Enterprise Sales Manager,New York,Full-time,135000,2020-02-28
-E023,Laura Martinez,Brian Jackson,Sales,Account Executive,New York,Full-time,95000,2021-11-16
-E024,Steven Harris,Brian Jackson,Sales,Account Executive,New York,Full-time,92000,2022-02-09
-E025,Nancy Clark,Thomas Anderson,Sales,Sales Representative,Remote,Full-time,82000,2021-12-01
-E026,Mark Robinson,Angela Wright,HR,HR Generalist,New York,Full-time,72000,2020-10-22
-E027,Angela Wright,Robert Taylor,HR,VP of Human Resources,New York,Full-time,205000,2018-07-11
-E028,Karen Lewis,Angela Wright,HR,Talent Acquisition Manager,Remote,Full-time,98000,2019-12-05
-E029,Paul Walker,Karen Lewis,HR,Recruiter,Remote,Full-time,68000,2021-07-19
-E030,Sandra Hall,Karen Lewis,HR,Recruiter,New York,Full-time,70000,2022-04-25`;
+        // Animated Canvas Demos
+        function animateDemo(canvasId, type) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            let frame = 0;
 
-            downloadCSV(csvData, 'optiforce_workforce_sample.csv');
+            function draw() {
+                ctx.clearRect(0, 0, width, height);
+                
+                if (type === 1) {
+                    // Org Chart Animation
+                    ctx.fillStyle = 'rgba(102, 126, 234, 0.3)';
+                    ctx.fillRect(width/2 - 60, 50, 120, 40);
+                    ctx.fillStyle = '#fff';
+                    ctx.font = '12px Inter';
+                    ctx.fillText('CEO', width/2 - 15, 75);
+                    
+                    // Animated connecting lines
+                    const pulse = Math.sin(frame * 0.05) * 0.3 + 0.7;
+                    ctx.strokeStyle = `rgba(102, 126, 234, ${pulse})`;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(width/2, 90);
+                    ctx.lineTo(width/2 - 100, 150);
+                    ctx.moveTo(width/2, 90);
+                    ctx.lineTo(width/2 + 100, 150);
+                    ctx.stroke();
+                    
+                    ctx.fillStyle = 'rgba(118, 75, 162, 0.3)';
+                    ctx.fillRect(width/2 - 160, 150, 100, 35);
+                    ctx.fillRect(width/2 + 60, 150, 100, 35);
+                    ctx.fillStyle = '#fff';
+                    ctx.font = '11px Inter';
+                    ctx.fillText('Manager', width/2 - 135, 172);
+                    ctx.fillText('Manager', width/2 + 85, 172);
+                    
+                } else if (type === 2) {
+                    // 9-Box Grid Animation
+                    ctx.strokeStyle = 'rgba(102, 126, 234, 0.5)';
+                    ctx.lineWidth = 2;
+                    for (let i = 0; i <= 3; i++) {
+                        ctx.beginPath();
+                        ctx.moveTo(100 + i * 133, 50);
+                        ctx.lineTo(100 + i * 133, 350);
+                        ctx.stroke();
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(100, 50 + i * 100);
+                        ctx.lineTo(500, 50 + i * 100);
+                        ctx.stroke();
+                    }
+                    
+                    // Animated dots
+                    const dots = [
+                        {x: 150, y: 100, color: '#4ade80'},
+                        {x: 300, y: 120, color: '#667eea'},
+                        {x: 420, y: 90, color: '#f093fb'},
+                        {x: 180, y: 250, color: '#fbbf24'},
+                        {x: 350, y: 280, color: '#667eea'}
+                    ];
+                    
+                    dots.forEach((dot, i) => {
+                        const offset = Math.sin(frame * 0.05 + i) * 3;
+                        ctx.fillStyle = dot.color;
+                        ctx.beginPath();
+                        ctx.arc(dot.x, dot.y + offset, 8, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+                    
+                    ctx.fillStyle = '#fff';
+                    ctx.font = '12px Inter';
+                    ctx.fillText('Performance →', 250, 370);
+                    ctx.save();
+                    ctx.translate(70, 200);
+                    ctx.rotate(-Math.PI / 2);
+                    ctx.fillText('Potential →', 0, 0);
+                    ctx.restore();
+                    
+                } else if (type === 3) {
+                    // Data Upload Animation
+                    ctx.fillStyle = 'rgba(102, 126, 234, 0.2)';
+                    ctx.fillRect(200, 100, 200, 150);
+                    ctx.strokeStyle = 'rgba(102, 126, 234, 0.5)';
+                    ctx.lineWidth = 3;
+                    ctx.setLineDash([10, 5]);
+                    ctx.strokeRect(200, 100, 200, 150);
+                    ctx.setLineDash([]);
+                    
+                    // Animated upload arrow
+                    const arrowY = 150 + Math.sin(frame * 0.08) * 10;
+                    ctx.fillStyle = '#4ade80';
+                    ctx.beginPath();
+                    ctx.moveTo(300, arrowY);
+                    ctx.lineTo(280, arrowY + 20);
+                    ctx.lineTo(290, arrowY + 20);
+                    ctx.lineTo(290, arrowY + 40);
+                    ctx.lineTo(310, arrowY + 40);
+                    ctx.lineTo(310, arrowY + 20);
+                    ctx.lineTo(320, arrowY + 20);
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    ctx.fillStyle = '#fff';
+                    ctx.font = '14px Inter';
+                    ctx.fillText('📄 Drop CSV File', 245, 280);
+                }
+                
+                frame++;
+                requestAnimationFrame(draw);
+            }
+            
+            draw();
         }
 
-        // Sample data for Performance Dashboard (30 employees with performance metrics)
-        function downloadPerformanceSample() {
-            const csvData = `Employee ID,Employee Name,Department,Job Title,Performance Rating,Potential Rating,Manager Rating,Peer Rating,Self Rating,Years at Company,Flight Risk Score,Last Promotion Date,Training Hours,Goal Completion %,Engagement Score
-E001,Sarah Johnson,Engineering,Senior Software Engineer,4,4,4.5,4.2,4.0,4.5,Low,2022-06-15,45,95,87
-E002,David Martinez,Engineering,Software Engineer,3,3,3.5,3.8,3.5,3.2,Medium,Never,28,78,72
-E003,Emily Watson,Engineering,Software Engineer,4,3,4.0,3.9,4.2,3.0,Low,Never,38,88,81
-E004,Michael Chen,Engineering,Engineering Manager,5,5,4.8,4.7,4.5,6.8,Low,2021-11-20,52,98,92
-E005,James Wilson,Engineering,Senior Engineering Manager,4,4,4.2,4.5,4.0,7.5,Low,2020-05-08,48,92,89
-E006,Jennifer Adams,Engineering,VP of Engineering,5,5,5.0,4.9,4.8,8.7,Low,2019-02-14,60,97,95
-E007,Lisa Anderson,Product,VP of Product,5,4,4.7,4.8,4.5,7.1,Low,2020-08-22,55,94,90
-E008,Robert Taylor,Executive,Chief Technology Officer,5,5,5.0,4.9,5.0,9.8,Low,2018-01-10,65,99,96
-E009,Maria Garcia,Product,Senior Product Manager,4,5,4.3,4.6,4.2,5.4,Low,2022-04-18,50,91,88
-E010,John Smith,Product,Product Manager,3,4,3.8,3.7,3.9,4.0,Medium,Never,32,82,75
-E011,Amanda Brown,Product,Product Manager,4,3,3.9,4.1,4.0,3.6,Low,Never,35,85,79
-E012,Christopher Lee,Marketing,Marketing Manager,4,4,4.2,4.0,4.1,4.3,Low,2022-07-14,42,89,83
-E013,Sarah Thompson,Marketing,VP of Marketing,5,4,4.6,4.7,4.4,6.5,Low,2021-03-30,58,96,91
-E014,Daniel Kim,Marketing,Content Marketing Manager,3,3,3.6,3.5,3.8,3.4,High,Never,25,72,68
-E015,Jessica Taylor,Marketing,Content Writer,3,3,3.2,3.4,3.5,2.7,Medium,Never,20,70,65
-E016,Ryan Miller,Marketing,Content Writer,3,4,3.5,3.6,3.4,1.5,Medium,Never,22,75,70
-E017,Michelle Davis,Marketing,Social Media Manager,4,3,3.8,4.0,3.9,3.2,Low,Never,30,83,77
-E018,Kevin White,Marketing,Marketing Coordinator,2,3,2.8,3.0,3.2,1.3,High,Never,18,65,62
-E019,Patricia Moore,Sales,Sales Representative,4,4,4.1,4.2,3.9,3.5,Low,Never,35,87,82
-E020,Thomas Anderson,Sales,Sales Manager,4,4,4.3,4.4,4.0,5.2,Low,2021-09-05,46,90,85
-E021,Rachel Kim,Sales,VP of Sales,5,5,4.9,4.8,4.6,7.0,Low,2020-12-18,62,98,93
-E022,Brian Jackson,Sales,Enterprise Sales Manager,4,5,4.4,4.5,4.2,4.8,Low,2022-02-28,44,93,86
-E023,Laura Martinez,Sales,Account Executive,3,3,3.7,3.6,3.8,3.0,Medium,Never,28,80,74
-E024,Steven Harris,Sales,Account Executive,3,4,3.8,3.9,3.6,2.7,Medium,Never,30,78,73
-E025,Nancy Clark,Sales,Sales Representative,4,3,3.9,4.0,4.1,2.9,Low,Never,33,84,80
-E026,Mark Robinson,HR,HR Generalist,3,3,3.6,3.7,3.5,4.1,Medium,Never,36,81,76
-E027,Angela Wright,HR,VP of Human Resources,5,4,4.7,4.8,4.5,6.3,Low,2021-07-11,56,95,90
-E028,Karen Lewis,HR,Talent Acquisition Manager,4,4,4.1,4.3,4.0,5.0,Low,2022-12-05,40,88,84
-E029,Paul Walker,HR,Recruiter,3,3,3.4,3.5,3.6,3.3,High,Never,24,76,71
-E030,Sandra Hall,HR,Recruiter,3,4,3.7,3.8,3.5,2.5,Medium,Never,26,79,74`;
+        // Initialize animations
+        setTimeout(() => {
+            animateDemo('demo1', 1);
+            animateDemo('demo2', 2);
+            animateDemo('demo3', 3);
+        }, 500);
 
-            downloadCSV(csvData, 'optiforce_performance_sample.csv');
+        function playVideo(num) {
+            alert(`📹 Video Tutorial ${num}\n\nFull video tutorials coming soon!\n\nFor now, try the "⚡ Try Live Demo" button below each tool to see instant results with pre-loaded sample data.`);
         }
 
-        // Helper function to download CSV
+        let currentToolType = '';
+
+        function openSampleModal(toolType) {
+            currentToolType = toolType;
+            const modal = document.getElementById('sampleModal');
+            const optionsContainer = document.getElementById('sampleOptions');
+            
+            const samples = toolType === 'workforce' ? workforceSamples : performanceSamples;
+            
+            optionsContainer.innerHTML = samples.map((sample, index) => `
+                <div class="sample-option" onclick="downloadSample(${index}, '${toolType}')">
+                    <h3>${sample.name}</h3>
+                    <p>${sample.description}</p>
+                    <div class="sample-fields">Fields: ${sample.fields.slice(0, 5).join(', ')}${sample.fields.length > 5 ? '...' : ''}</div>
+                </div>
+            `).join('');
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSampleModal() {
+            document.getElementById('sampleModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function downloadSample(index, toolType) {
+            const samples = toolType === 'workforce' ? workforceSamples : performanceSamples;
+            const sample = samples[index];
+            downloadCSV(sample.data, sample.filename);
+            closeSampleModal();
+        }
+
         function downloadCSV(content, filename) {
             const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
-            if (link.download !== undefined) {
-                const url = URL.createObjectURL(blob);
-                link.setAttribute('href', url);
-                link.setAttribute('download', filename);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
-        // Launch tool with pre-loaded sample data
         function launchWithSampleData(toolType) {
-            if (toolType === 'workforce') {
-                // Store sample data in sessionStorage
-                const sampleData = `Employee ID,Employee Name,Manager Name,Department,Job Title,Location,Employment Type,Salary,Hire Date
-E001,Sarah Johnson,Michael Chen,Engineering,Senior Software Engineer,New York,Full-time,125000,2020-03-15
-E002,David Martinez,Michael Chen,Engineering,Software Engineer,New York,Full-time,95000,2021-06-01
-E003,Emily Watson,Michael Chen,Engineering,Software Engineer,Remote,Full-time,98000,2021-09-12
-E004,Michael Chen,Jennifer Adams,Engineering,Engineering Manager,New York,Full-time,165000,2018-11-20
-E005,James Wilson,Jennifer Adams,Engineering,Senior Engineering Manager,San Francisco,Full-time,185000,2017-05-08
-E006,Jennifer Adams,Robert Taylor,Engineering,VP of Engineering,New York,Full-time,245000,2016-02-14
-E007,Lisa Anderson,Robert Taylor,Product,VP of Product,San Francisco,Full-time,235000,2017-08-22
-E008,Robert Taylor,,Executive,Chief Technology Officer,New York,Full-time,325000,2015-01-10`;
-                
-                sessionStorage.setItem('optiforce_demo_data', sampleData);
-                sessionStorage.setItem('optiforce_demo_mode', 'true');
-                window.open('workforce-analyzer.html', '_blank');
-            } else if (toolType === 'performance') {
-                const sampleData = `Employee ID,Employee Name,Department,Job Title,Performance Rating,Potential Rating,Manager Rating,Peer Rating,Self Rating,Years at Company,Flight Risk Score
-E001,Sarah Johnson,Engineering,Senior Software Engineer,4,4,4.5,4.2,4.0,4.5,Low
-E002,David Martinez,Engineering,Software Engineer,3,3,3.5,3.8,3.5,3.2,Medium
-E003,Emily Watson,Engineering,Software Engineer,4,3,4.0,3.9,4.2,3.0,Low
-E004,Michael Chen,Engineering,Engineering Manager,5,5,4.8,4.7,4.5,6.8,Low`;
-                
-                sessionStorage.setItem('optiforce_demo_data', sampleData);
-                sessionStorage.setItem('optiforce_demo_mode', 'true');
-                window.open('performance-dashboard.html', '_blank');
-            }
+            const samples = toolType === 'workforce' ? workforceSamples : performanceSamples;
+            const basicSample = samples[0]; // Use basic/complete sample for demo
+            
+            sessionStorage.setItem('optiforce_demo_data', basicSample.data);
+            sessionStorage.setItem('optiforce_demo_mode', 'true');
+            
+            const url = toolType === 'workforce' ? 'workforce-analyzer.html' : 'performance-dashboard.html';
+            window.open(url, '_blank');
         }
 
-        // Contact Modal Functions
         function openContactModal() {
             document.getElementById('contactModal').classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -1305,60 +1414,28 @@ E004,Michael Chen,Engineering,Engineering Manager,5,5,4.8,4.7,4.5,6.8,Low`;
             document.body.style.overflow = 'auto';
         }
 
-        // Handle contact form submission
         function handleContactSubmit(event) {
             event.preventDefault();
-            
-            // Get form data
             const formData = new FormData(event.target);
-            const data = {
-                name: formData.get('name'),
-                email: formData.get('email'),
-                company: formData.get('company'),
-                message: formData.get('message')
-            };
-
-            // REPLACE THIS URL WITH YOUR ACTUAL FORM SUBMISSION URL
-            // Options: Google Forms, Formspree, Netlify Forms, etc.
-            const FORM_SUBMISSION_URL = 'YOUR_FORM_URL_HERE';
-
-            // For now, show a success message
-            alert(`Thanks ${data.name}! We'll get back to you at ${data.email} soon.\n\nTo make this work, add your form submission URL in the code.`);
+            
+            // REPLACE WITH YOUR FORM URL
+            alert(`Thanks ${formData.get('name')}! We'll get back to you at ${formData.get('email')} soon.`);
             closeContactModal();
             event.target.reset();
-
-            // Uncomment below when you have a real form URL:
-            /*
-            fetch(FORM_SUBMISSION_URL, {
-                method: 'POST',
-                body: JSON.stringify(data),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(result => {
-                alert('Thank you! We will get back to you soon.');
-                closeContactModal();
-                event.target.reset();
-            })
-            .catch(error => {
-                alert('There was an error submitting the form. Please try again.');
-                console.error('Error:', error);
-            });
-            */
         }
 
-        // Close modal when clicking outside
+        // Close modals on outside click
+        document.getElementById('sampleModal').addEventListener('click', function(e) {
+            if (e.target === this) closeSampleModal();
+        });
         document.getElementById('contactModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeContactModal();
-            }
+            if (e.target === this) closeContactModal();
         });
 
-        // Close modal with Escape key
+        // Close modals with Escape
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
+                closeSampleModal();
                 closeContactModal();
             }
         });
