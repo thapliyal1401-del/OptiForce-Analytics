@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cognitive Aptitude Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e2a;
+    --border: #252a38;
+    --accent: #e8c840;
+    --accent2: #5b8dee;
+    --text: #e8eaf2;
+    --muted: #7a7f96;
+    --success: #4cde9a;
+    --danger: #f05c6a;
+    --radius: 14px;
+
+    /* Competency colors */
+    --c1: #e8c840;
+    --c2: #5b8dee;
+    --c3: #4cde9a;
+    --c4: #f07a40;
+    --c5: #c45bee;
+    --c6: #ee5b9a;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(91,141,238,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(91,141,238,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── INTRO ── */
+  .intro-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(232,200,64,0.1);
+    border: 1px solid rgba(232,200,64,0.3);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 32px;
+  }
+
+  .intro-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(38px, 6vw, 64px);
+    font-weight: 900;
+    line-height: 1.05;
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+  }
+
+  .intro-title span { color: var(--accent); }
+
+  .intro-sub {
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.7;
+    max-width: 560px;
+    margin-bottom: 40px;
+  }
+
+  .competency-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  .comp-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .comp-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .comp-count {
+    margin-left: auto;
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--accent);
+    color: #0d0f14;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 16px 36px;
+    border-radius: 100px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    letter-spacing: 0.3px;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(232,200,64,0.3);
+  }
+
+  .btn-primary:active { transform: translateY(0); }
+
+  /* ── QUIZ ── */
+  .quiz-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .quiz-progress-wrap {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .quiz-progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .quiz-progress-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .quiz-progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 4px;
+    transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .section-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  .question-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px 36px 28px;
+    margin-bottom: 20px;
+    animation: slideUp 0.35s ease;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .question-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .question-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  .question-text {
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.6;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 18px;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.18s;
+    text-align: left;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14.5px;
+    line-height: 1.5;
+    width: 100%;
+  }
+
+  .option-letter {
+    flex-shrink: 0;
+    width: 26px; height: 26px;
+    background: var(--border);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    transition: all 0.18s;
+    margin-top: 1px;
+  }
+
+  .option-btn:hover:not(.selected):not(.disabled) {
+    border-color: rgba(232,200,64,0.4);
+    background: rgba(232,200,64,0.05);
+  }
+
+  .option-btn:hover:not(.selected):not(.disabled) .option-letter {
+    background: rgba(232,200,64,0.2);
+    color: var(--accent);
+  }
+
+  .option-btn.selected {
+    border-color: var(--accent);
+    background: rgba(232,200,64,0.08);
+  }
+
+  .option-btn.selected .option-letter {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+
+  .option-btn.disabled { cursor: default; pointer-events: none; }
+
+  .option-btn.correct {
+    border-color: var(--success);
+    background: rgba(76,222,154,0.08);
+  }
+
+  .option-btn.correct .option-letter {
+    background: var(--success);
+    color: #0d0f14;
+  }
+
+  .option-btn.wrong {
+    border-color: var(--danger);
+    background: rgba(240,92,106,0.08);
+  }
+
+  .option-btn.wrong .option-letter {
+    background: var(--danger);
+    color: #fff;
+  }
+
+  .nav-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 12px 24px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .btn-next {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent);
+    color: #0d0f14;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 12px 28px;
+    border-radius: 100px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.18s;
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  .btn-next.enabled {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .btn-next.enabled:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(232,200,64,0.25);
+  }
+
+  /* ── SECTION TRANSITION ── */
+  .section-transition {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 48px 40px;
+    text-align: center;
+    animation: slideUp 0.35s ease;
+  }
+
+  .section-icon {
+    width: 72px; height: 72px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin: 0 auto 24px;
+  }
+
+  .section-transition h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .section-transition p {
+    color: var(--muted);
+    font-size: 15px;
+    margin-bottom: 32px;
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ── RESULTS ── */
+  .results-header {
+    text-align: center;
+    padding: 20px 0 40px;
+  }
+
+  .results-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 900;
+    margin-bottom: 10px;
+  }
+
+  .results-header p {
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  .overall-score-ring {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 48px;
+  }
+
+  .ring-wrap {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin-bottom: 16px;
+  }
+
+  .ring-wrap svg {
+    transform: rotate(-90deg);
+  }
+
+  .ring-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ring-score {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .ring-label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .overall-grade {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .overall-desc {
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* Competency cards */
+  .comp-results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  @media (max-width: 600px) {
+    .comp-results-grid { grid-template-columns: 1fr; }
+    .question-card { padding: 24px 20px 20px; }
+    .section-transition { padding: 36px 24px; }
+  }
+
+  .comp-result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+  }
+
+  .comp-result-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .comp-result-card:hover { transform: translateY(-2px); }
+
+  .comp-result-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    gap: 10px;
+  }
+
+  .comp-result-name {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  .comp-result-pct {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .comp-result-bar-bg {
+    height: 5px;
+    background: var(--border);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+
+  .comp-result-bar-fill {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+    width: 0;
+  }
+
+  .comp-result-detail {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .comp-result-verdict {
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 6px;
+  }
+
+  /* Analysis section */
+  .analysis-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 24px;
+  }
+
+  .analysis-section h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .strength-item, .improvement-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .strength-item:last-child, .improvement-item:last-child { border-bottom: none; }
+
+  .item-icon {
+    width: 32px; height: 32px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .item-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+
+  .item-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .radar-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+
+  .question-review {
+    margin-top: 8px;
+  }
+
+  .review-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .review-item:last-child { border-bottom: none; }
+
+  .review-icon {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .review-icon.correct { background: rgba(76,222,154,0.2); color: var(--success); }
+  .review-icon.wrong { background: rgba(240,92,106,0.2); color: var(--danger); }
+
+  .review-q { color: var(--muted); margin-bottom: 2px; }
+  .review-a { font-weight: 500; }
+
+  .btn-restart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 16px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 12px;
+  }
+
+  .btn-restart:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 32px 0;
+  }
+
+  /* Animate bars on results */
+  .animate-bars .comp-result-bar-fill {
+    transition: width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ═══════ INTRO SCREEN ═══════ -->
+  <div class="screen active" id="screen-intro">
+    <div class="intro-badge">⚡ Professional Assessment</div>
+    <h1 class="intro-title">Cognitive<br><span>Aptitude</span><br>Assessment</h1>
+    <p class="intro-sub">A comprehensive 20-question test measuring six key professional competencies. Choose carefully — each question has one best answer.</p>
+
+    <div class="competency-grid">
+      <div class="comp-pill"><div class="comp-dot" style="background:var(--c1)"></div>Logical Reasoning<span class="comp-count">3 Qs</span></div>
+      <div class="comp-pill"><div class="comp-dot" style="background:var(--c2)"></div>Verbal Reasoning<span class="comp-count">4 Qs</span></div>
+      <div class="comp-pill"><div class="comp-dot" style="background:var(--c3)"></div>Cognitive Reasoning<span class="comp-count">4 Qs</span></div>
+      <div class="comp-pill"><div class="comp-dot" style="background:var(--c4)"></div>Analytical Thinking<span class="comp-count">4 Qs</span></div>
+      <div class="comp-pill"><div class="comp-dot" style="background:var(--c5)"></div>Critical Thinking<span class="comp-count">3 Qs</span></div>
+      <div class="comp-pill"><div class="comp-dot" style="background:var(--c6)"></div>Decision-Making<span class="comp-count">4 Qs</span></div>
+    </div>
+
+    <button class="btn-primary" onclick="startQuiz()">Begin Assessment →</button>
+  </div>
+
+  <!-- ═══════ QUIZ SCREEN ═══════ -->
+  <div class="screen" id="screen-quiz">
+    <div class="quiz-header">
+      <div class="quiz-progress-wrap">
+        <div class="quiz-progress-label">
+          <span id="prog-label">Question 1 of 20</span>
+          <span id="prog-pct">0%</span>
+        </div>
+        <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="prog-fill" style="width:0%"></div></div>
+      </div>
+      <div id="section-badge-wrap"></div>
+    </div>
+
+    <div id="question-area"></div>
+
+    <div class="nav-row">
+      <button class="btn-secondary" id="btn-prev" onclick="prevQuestion()">← Back</button>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">Next →</button>
+    </div>
+  </div>
+
+  <!-- ═══════ RESULTS SCREEN ═══════ -->
+  <div class="screen" id="screen-results">
+    <div class="results-header">
+      <div class="intro-badge">✓ Assessment Complete</div>
+      <h1 class="results-header-title" id="results-title">Your Results</h1>
+      <p id="results-subtitle"></p>
+    </div>
+
+    <div class="overall-score-ring">
+      <div class="ring-wrap">
+        <svg width="160" height="160" viewBox="0 0 160 160">
+          <circle cx="80" cy="80" r="66" fill="none" stroke="var(--border)" stroke-width="10"/>
+          <circle cx="80" cy="80" r="66" fill="none" stroke="var(--accent)" stroke-width="10"
+            stroke-linecap="round" stroke-dasharray="414.69" stroke-dashoffset="414.69" id="ring-circle"/>
+        </svg>
+        <div class="ring-center">
+          <div class="ring-score" id="ring-score">0</div>
+          <div class="ring-label">/ 20</div>
+        </div>
+      </div>
+      <div class="overall-grade" id="overall-grade"></div>
+      <div class="overall-desc" id="overall-desc"></div>
+    </div>
+
+    <!-- Competency breakdown -->
+    <div class="comp-results-grid" id="comp-results-grid"></div>
+
+    <div class="divider"></div>
+
+    <!-- Radar chart -->
+    <div class="analysis-section">
+      <h3>📊 Competency Radar</h3>
+      <div class="radar-wrap" id="radar-wrap"></div>
+    </div>
+
+    <!-- Strengths -->
+    <div class="analysis-section" id="strengths-section">
+      <h3>💪 Your Strengths</h3>
+      <div id="strengths-list"></div>
+    </div>
+
+    <!-- Areas to improve -->
+    <div class="analysis-section" id="improve-section">
+      <h3>🎯 Areas for Development</h3>
+      <div id="improve-list"></div>
+    </div>
+
+    <!-- Detailed review -->
+    <div class="analysis-section">
+      <h3>📋 Question-by-Question Review</h3>
+      <div id="review-list"></div>
+    </div>
+
+    <button class="btn-restart" onclick="restartQuiz()">↺ Retake Assessment</button>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════════════════════
+
+const SECTIONS = [
+  {
+    id: 'logical',
+    name: 'Logical Reasoning',
+    color: 'var(--c1)',
+    hex: '#e8c840',
+    icon: '🔗',
+    emoji: '🔗',
+    qs: [2,3,4],   // 1-based
+    description: 'Deductive and inductive reasoning from given premises.',
+    strength: 'You excel at drawing valid conclusions from structured premises and recognising logical relationships.',
+    improve: 'Practice syllogism exercises and number pattern recognition to sharpen deductive skills.'
+  },
+  {
+    id: 'verbal',
+    name: 'Verbal Reasoning',
+    color: 'var(--c2)',
+    hex: '#5b8dee',
+    icon: '📖',
+    emoji: '📖',
+    qs: [5,6,7,8],
+    description: 'Comprehension, interpretation, and language clarity.',
+    strength: 'Strong ability to extract key messages from text and interpret language precisely.',
+    improve: 'Work on identifying implicit assumptions and nuances in professional communications.'
+  },
+  {
+    id: 'cognitive',
+    name: 'Cognitive Reasoning',
+    color: 'var(--c3)',
+    hex: '#4cde9a',
+    icon: '🧮',
+    emoji: '🧮',
+    qs: [9,10,11,12],
+    description: 'Numerical aptitude, rate & ratio, and time calculation.',
+    strength: 'Solid numerical ability and comfort with rate-based calculations.',
+    improve: 'Review proportional reasoning, inverse relationships, and modular arithmetic concepts.'
+  },
+  {
+    id: 'analytical',
+    name: 'Analytical Thinking',
+    color: 'var(--c4)',
+    hex: '#f07a40',
+    icon: '🔍',
+    emoji: '🔍',
+    qs: [1,13,14,15],
+    description: 'Breaking down complex problems and identifying root causes.',
+    strength: 'Good at spotting patterns across data points and forming multi-factor conclusions.',
+    improve: 'Practice root-cause analysis frameworks like 5-Whys and fishbone diagrams.'
+  },
+  {
+    id: 'critical',
+    name: 'Critical Thinking',
+    color: 'var(--c5)',
+    hex: '#c45bee',
+    icon: '🧠',
+    emoji: '🧠',
+    qs: [16,17,18],
+    description: 'Evaluating evidence quality and reasoning validity.',
+    strength: 'You can spot weak arguments and assess the quality of supporting evidence.',
+    improve: 'Study cognitive bias patterns and practice evidence-based reasoning exercises.'
+  },
+  {
+    id: 'decision',
+    name: 'Decision-Making',
+    color: 'var(--c6)',
+    hex: '#ee5b9a',
+    icon: '⚖️',
+    emoji: '⚖️',
+    qs: [19,20,1,14,18],
+    description: 'Balanced judgement under competing priorities.',
+    strength: 'Capable of weighing trade-offs and making pragmatic, balanced decisions.',
+    improve: 'Practise structured decision frameworks such as cost-benefit and pros/cons matrices.'
+  }
+];
+
+const QUESTIONS = [
+  {
+    id: 1, text: "A supervisor notices that errors increase only during evening shifts. What is the most likely first conclusion?",
+    options: ["A. Evening staff are careless","B. Work conditions during evening shifts may be causing the errors","C. The supervisor is biased","D. Errors are random"],
+    answer: 1
+  },
+  {
+    id: 2, text: "All team leaders attend the weekly review meeting. Some analysts are team leaders. Which statement must be true?",
+    options: ["A. All analysts attend the weekly review meeting","B. Some analysts attend the weekly review meeting","C. No analysts attend the weekly review meeting","D. Only analysts attend the weekly review meeting"],
+    answer: 1
+  },
+  {
+    id: 3, text: "Find the next number: 3, 8, 15, 24, 35, ?",
+    options: ["A. 44","B. 46","C. 48","D. 50"],
+    answer: 2
+  },
+  {
+    id: 4, text: "If every delayed order leads to a complaint, and some orders were delayed today, what can be concluded?",
+    options: ["A. All orders received complaints","B. Some orders may have received complaints","C. No complaints were received","D. Delays never cause complaints"],
+    answer: 1
+  },
+  {
+    id: 5, text: "A notice says: \"Employees must complete safety training before using new equipment.\" What is the main message?",
+    options: ["A. New equipment is unsafe","B. Safety training is optional","C. Training is required before equipment use","D. Employees should avoid new equipment"],
+    answer: 2
+  },
+  {
+    id: 6, text: "Choose the best interpretation: \"Customer satisfaction fell after waiting time increased.\"",
+    options: ["A. Longer waiting time likely reduced satisfaction","B. Customers prefer longer waits","C. Satisfaction increased because of waiting time","D. Waiting time and satisfaction are unrelated"],
+    answer: 0
+  },
+  {
+    id: 7, text: "Read this statement: \"The project failed because communication between departments was weak.\" Which word best captures the main issue?",
+    options: ["A. Budget","B. Communication","C. Technology","D. Competition"],
+    answer: 1
+  },
+  {
+    id: 8, text: "Which sentence is the clearest summary? \"The staff were not unwilling to help, but they were not given clear instructions.\"",
+    options: ["A. Staff refused to help","B. Staff wanted instructions before helping","C. The real issue was lack of clarity","D. The staff lacked ability"],
+    answer: 2
+  },
+  {
+    id: 9, text: "A machine makes 12 units in 3 hours. At the same rate, how many units will it make in 5 hours?",
+    options: ["A. 18","B. 20","C. 24","D. 30"],
+    answer: 1
+  },
+  {
+    id: 10, text: "If 6 workers can finish a task in 10 days, how many days will 12 workers take, assuming the same productivity?",
+    options: ["A. 3","B. 5","C. 8","D. 12"],
+    answer: 1
+  },
+  {
+    id: 11, text: "If today is Tuesday, what day will it be after 17 days?",
+    options: ["A. Thursday","B. Friday","C. Saturday","D. Sunday"],
+    answer: 3
+  },
+  {
+    id: 12, text: "A store offers 25% off on a ₹800 item. What is the discounted price?",
+    options: ["A. 500","B. 550","C. 600","D. 650"],
+    answer: 2
+  },
+  {
+    id: 13, text: "A company's sales dropped last quarter. The data shows: prices went up, competitor discounts increased, and complaints rose. What is the best conclusion?",
+    options: ["A. Only pricing caused the drop","B. Only complaints caused the drop","C. Multiple factors may have caused the drop","D. Sales dropped for no clear reason"],
+    answer: 2
+  },
+  {
+    id: 14, text: "A project team is missing deadlines because team members are unclear about who is responsible for each task. What should be done first?",
+    options: ["A. Extend the deadline","B. Hire more staff","C. Clarify roles and responsibilities","D. Reduce quality standards"],
+    answer: 2
+  },
+  {
+    id: 15, text: "A restaurant gets most complaints between 1 PM and 2 PM. What is the strongest first hypothesis?",
+    options: ["A. Customers are impatient at lunch","B. Peak-hour pressure may be affecting service quality","C. The food is always poor","D. The staff should be replaced"],
+    answer: 1
+  },
+  {
+    id: 16, text: "A manager says \"Productivity is low because employees do not care.\" What is the main weakness in this statement?",
+    options: ["A. It is too specific","B. It is based on assumption, not evidence","C. It is mathematically incorrect","D. It is the only possible explanation"],
+    answer: 1
+  },
+  {
+    id: 17, text: "Which is the strongest basis for choosing a solution?",
+    options: ["A. I personally like it","B. It worked somewhere once","C. The available data shows it improved results in similar situations","D. Most people in the room agree"],
+    answer: 2
+  },
+  {
+    id: 18, text: "A proposed solution reduces cost but increases customer complaints. What is the best next step?",
+    options: ["A. Accept it because cost matters most","B. Reject it immediately without review","C. Evaluate both the benefit and the negative impact before deciding","D. Ignore the complaints"],
+    answer: 2
+  },
+  {
+    id: 19, text: "Your team must choose between two options: one is cheaper, the other gives much better quality. What should be considered first?",
+    options: ["A. Manager preference","B. Customer and business needs","C. Which option is easier to explain","D. Which option is newer"],
+    answer: 1
+  },
+  {
+    id: 20, text: "A report is due tomorrow, but you find an important error tonight. What is the best decision?",
+    options: ["A. Submit it anyway","B. Correct the important error before submission","C. Delete the report","D. Wait for someone else to notice it"],
+    answer: 1
+  }
+];
+
+// Section order for quiz flow
+const SECTION_ORDER = ['logical','verbal','cognitive','analytical','critical','decision'];
+
+// Question order per section (deduped, unique for quiz flow)
+// decision shares Q1,14,18 but we only ask them once (in analytical/critical)
+const QUIZ_FLOW = [
+  { sectionId: 'logical',   qIds: [2,3,4] },
+  { sectionId: 'verbal',    qIds: [5,6,7,8] },
+  { sectionId: 'cognitive', qIds: [9,10,11,12] },
+  { sectionId: 'analytical',qIds: [1,13,14,15] },
+  { sectionId: 'critical',  qIds: [16,17,18] },
+  { sectionId: 'decision',  qIds: [19,20] }
+];
+
+// ═══════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════
+
+let flatQuestions = [];  // [{sectionId, q}, ...]
+let currentIdx = 0;
+let userAnswers = {};    // qId -> optionIndex
+let showFeedback = false;
+
+function buildFlatQuestions() {
+  flatQuestions = [];
+  QUIZ_FLOW.forEach(block => {
+    block.qIds.forEach(qId => {
+      const q = QUESTIONS.find(q => q.id === qId);
+      flatQuestions.push({ sectionId: block.sectionId, q });
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════════
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+
+function startQuiz() {
+  buildFlatQuestions();
+  currentIdx = 0;
+  userAnswers = {};
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const total = flatQuestions.length;
+  const item = flatQuestions[currentIdx];
+  const section = SECTIONS.find(s => s.id === item.sectionId);
+  const q = item.q;
+  const answered = userAnswers[q.id] !== undefined;
+
+  // Progress
+  document.getElementById('prog-label').textContent = `Question ${currentIdx + 1} of ${total}`;
+  const pct = Math.round((currentIdx / total) * 100);
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('prog-fill').style.width = pct + '%';
+
+  // Section badge
+  document.getElementById('section-badge-wrap').innerHTML =
+    `<div class="section-badge" style="background:${section.hex}22;color:${section.hex};border:1px solid ${section.hex}44">
+      ${section.emoji} ${section.name}
+    </div>`;
+
+  // Question
+  const letters = ['A','B','C','D'];
+  const opts = q.options.map((opt, i) => {
+    let cls = 'option-btn';
+    if (answered) {
+      cls += ' disabled';
+      if (userAnswers[q.id] === i) cls += ' selected';
+    }
+    return `<button class="${cls}" onclick="selectAnswer(${q.id},${i})">
+      <span class="option-letter">${letters[i]}</span>
+      <span>${opt.substring(3)}</span>
+    </button>`;
+  }).join('');
+
+  document.getElementById('question-area').innerHTML = `
+    <div class="question-card">
+      <div class="question-meta">
+        <span class="question-num">Q${currentIdx + 1}</span>
+      </div>
+      <div class="question-text">${q.text}</div>
+      <div class="options-list">${opts}</div>
+    </div>`;
+
+  // Nav
+  document.getElementById('btn-prev').style.visibility = currentIdx === 0 ? 'hidden' : 'visible';
+  const btnNext = document.getElementById('btn-next');
+  const isLast = currentIdx === total - 1;
+  btnNext.textContent = isLast ? 'See Results →' : 'Next →';
+  btnNext.className = 'btn-next' + (answered ? ' enabled' : '');
+}
+
+function selectAnswer(qId, optIdx) {
+  userAnswers[qId] = optIdx;
+  renderQuestion(); // re-render with feedback
+}
+
+function nextQuestion() {
+  if (userAnswers[flatQuestions[currentIdx].q.id] === undefined) return;
+  if (currentIdx === flatQuestions.length - 1) {
+    showResults();
+    return;
+  }
+  currentIdx++;
+  renderQuestion();
+}
+
+function prevQuestion() {
+  if (currentIdx > 0) { currentIdx--; renderQuestion(); }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  RESULTS
+// ═══════════════════════════════════════════════════════════
+
+function computeScores() {
+  const scores = {};
+  SECTIONS.forEach(sec => {
+    let correct = 0;
+    sec.qs.forEach(qId => {
+      const q = QUESTIONS.find(q => q.id === qId);
+      if (userAnswers[qId] === q.answer) correct++;
+    });
+    scores[sec.id] = { correct, total: sec.qs.length, pct: Math.round((correct / sec.qs.length) * 100) };
+  });
+  return scores;
+}
+
+function getVerdict(pct) {
+  if (pct >= 90) return { label: 'Excellent', color: '#4cde9a' };
+  if (pct >= 75) return { label: 'Strong', color: '#5b8dee' };
+  if (pct >= 60) return { label: 'Good', color: '#e8c840' };
+  if (pct >= 40) return { label: 'Fair', color: '#f07a40' };
+  return { label: 'Needs Work', color: '#f05c6a' };
+}
+
+function showResults() {
+  showScreen('results');
+
+  const scores = computeScores();
+  const totalCorrect = Object.values(scores).reduce((s, v) => {
+    // avoid double-counting shared questions
+    return 0;
+  }, 0);
+
+  // Count unique correct answers
+  let unique = 0;
+  QUESTIONS.forEach(q => { if (userAnswers[q.id] === q.answer) unique++; });
+
+  const overallPct = Math.round((unique / 20) * 100);
+
+  // Ring animation
+  setTimeout(() => {
+    const circle = document.getElementById('ring-circle');
+    const circumference = 2 * Math.PI * 66;
+    const offset = circumference * (1 - unique / 20);
+    circle.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(0.34,1.56,0.64,1)';
+    circle.style.strokeDashoffset = offset;
+  }, 300);
+
+  document.getElementById('ring-score').textContent = unique;
+
+  const grade = getOverallGrade(overallPct);
+  document.getElementById('overall-grade').textContent = grade.title;
+  document.getElementById('overall-desc').textContent = grade.desc;
+
+  // Competency cards
+  const grid = document.getElementById('comp-results-grid');
+  grid.innerHTML = '';
+  SECTIONS.forEach(sec => {
+    const s = scores[sec.id];
+    const v = getVerdict(s.pct);
+    const card = document.createElement('div');
+    card.className = 'comp-result-card';
+    card.style.cssText = `--card-color:${sec.hex}`;
+    card.innerHTML = `
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${sec.hex};border-radius:14px 14px 0 0"></div>
+      <div class="comp-result-header">
+        <div>
+          <div style="font-size:20px;margin-bottom:4px">${sec.emoji}</div>
+          <div class="comp-result-name">${sec.name}</div>
+        </div>
+        <div class="comp-result-pct" style="color:${sec.hex}">${s.pct}%</div>
+      </div>
+      <div class="comp-result-bar-bg">
+        <div class="comp-result-bar-fill" style="background:${sec.hex}" data-width="${s.pct}%"></div>
+      </div>
+      <div class="comp-result-detail">${s.correct} / ${s.total} correct</div>
+      <div class="comp-result-verdict" style="color:${v.color}">${v.label}</div>`;
+    grid.appendChild(card);
+  });
+
+  // Animate bars
+  setTimeout(() => {
+    document.querySelectorAll('.comp-result-bar-fill').forEach(el => {
+      el.style.width = el.dataset.width;
+    });
+  }, 400);
+
+  // Radar
+  buildRadar(scores);
+
+  // Strengths & improvements
+  const sorted = SECTIONS.map(sec => ({ sec, s: scores[sec.id] })).sort((a,b) => b.s.pct - a.s.pct);
+  const strengths = sorted.filter(x => x.s.pct >= 67);
+  const improvements = sorted.filter(x => x.s.pct < 67);
+
+  const strengthsEl = document.getElementById('strengths-list');
+  if (strengths.length === 0) {
+    strengthsEl.innerHTML = '<p style="color:var(--muted);font-size:14px">Keep practising — improvement is just around the corner!</p>';
+  } else {
+    strengthsEl.innerHTML = strengths.map(x => `
+      <div class="strength-item">
+        <div class="item-icon" style="background:${x.sec.hex}22">${x.sec.emoji}</div>
+        <div>
+          <div class="item-title" style="color:${x.sec.hex}">${x.sec.name} — ${x.s.pct}%</div>
+          <div class="item-desc">${x.sec.strength}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  const improveEl = document.getElementById('improve-list');
+  if (improvements.length === 0) {
+    improveEl.innerHTML = '<p style="color:var(--muted);font-size:14px">Outstanding! No major areas requiring improvement identified.</p>';
+  } else {
+    improveEl.innerHTML = improvements.map(x => `
+      <div class="improvement-item">
+        <div class="item-icon" style="background:rgba(240,92,106,0.15)">📈</div>
+        <div>
+          <div class="item-title" style="color:#f07a40">${x.sec.name} — ${x.s.pct}%</div>
+          <div class="item-desc">${x.sec.improve}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  // Review
+  buildReview();
+}
+
+function getOverallGrade(pct) {
+  if (pct >= 90) return { title: 'Outstanding Performance 🏆', desc: 'You demonstrate exceptional cognitive aptitude across all competencies.' };
+  if (pct >= 75) return { title: 'Strong Performance ⭐', desc: 'Above-average aptitude with clear professional strengths.' };
+  if (pct >= 60) return { title: 'Good Performance 👍', desc: 'Solid foundation with room to sharpen specific competencies.' };
+  if (pct >= 45) return { title: 'Fair Performance 📚', desc: 'Core skills present; focused practice will drive significant improvement.' };
+  return { title: 'Developing Skills 🌱', desc: 'Early stage — consistent practice across all competency areas is recommended.' };
+}
+
+function buildRadar(scores) {
+  const W = 320, H = 320, cx = 160, cy = 160, r = 110;
+  const n = SECTIONS.length;
+  const angleStep = (2 * Math.PI) / n;
+
+  function point(i, radius) {
+    const angle = angleStep * i - Math.PI / 2;
+    return { x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
+  }
+
+  // Grid rings
+  let rings = '';
+  [0.25, 0.5, 0.75, 1].forEach(f => {
+    const pts = SECTIONS.map((_, i) => point(i, r * f));
+    rings += `<polygon points="${pts.map(p => `${p.x},${p.y}`).join(' ')}" fill="none" stroke="var(--border)" stroke-width="1"/>`;
+  });
+
+  // Axes
+  let axes = '';
+  SECTIONS.forEach((sec, i) => {
+    const p = point(i, r);
+    axes += `<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="var(--border)" stroke-width="1"/>`;
+    const lp = point(i, r + 22);
+    axes += `<text x="${lp.x}" y="${lp.y}" text-anchor="middle" dominant-baseline="middle" font-size="11" fill="var(--muted)" font-family="DM Sans">${sec.emoji}</text>`;
+  });
+
+  // Data polygon
+  const dataPts = SECTIONS.map((sec, i) => point(i, r * (scores[sec.id].pct / 100)));
+  const polyStr = dataPts.map(p => `${p.x},${p.y}`).join(' ');
+
+  const svg = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    ${rings}${axes}
+    <polygon points="${polyStr}" fill="rgba(232,200,64,0.15)" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>
+    ${dataPts.map((p,i) => `<circle cx="${p.x}" cy="${p.y}" r="5" fill="${SECTIONS[i].hex}"/>`).join('')}
+  </svg>`;
+
+  document.getElementById('radar-wrap').innerHTML = svg;
+}
+
+function buildReview() {
+  const el = document.getElementById('review-list');
+  const letters = ['A','B','C','D'];
+  el.innerHTML = flatQuestions.map(({sectionId, q}, idx) => {
+    const sec = SECTIONS.find(s => s.id === sectionId);
+    const ua = userAnswers[q.id];
+    const correct = ua === q.answer;
+    return `<div class="review-item">
+      <div class="review-icon ${correct ? 'correct' : 'wrong'}">${correct ? '✓' : '✗'}</div>
+      <div>
+        <div class="review-q">Q${idx+1} · <span style="color:${sec.hex}">${sec.name}</span></div>
+        <div class="review-a">${q.text.substring(0,80)}${q.text.length > 80 ? '…' : ''}</div>
+        ${!correct ? `<div style="font-size:12px;color:var(--muted);margin-top:3px">
+          Your answer: ${letters[ua]} · Correct: ${letters[q.answer]}
+        </div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function restartQuiz() {
+  startQuiz();
+}
+</script>
+</body>
+</html>
